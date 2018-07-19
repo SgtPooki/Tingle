@@ -24,6 +24,6 @@ L.Control.ZMobileHeaderBar = L.Control.extend({
 	// };
 });
 
-L.control.zmobileheaderbar = function (options) {
+L.control.zmobileheaderbar = function(options) {
   return new L.Control.ZMobileHeaderBar(options);
 };

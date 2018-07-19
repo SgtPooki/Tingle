@@ -3,6 +3,8 @@
 //   - precision: [Number]
 
 L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
+  _className: "L.Control.InfoBox.Location.Bounds",
+
   options: {
     title: "Bounds Coordinates",
     className: "bounds"
@@ -81,8 +83,6 @@ L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
   }
 });
 
-L.Control.InfoBox.Location.Bounds.prototype._className = "L.Control.InfoBox.Location.Bounds";
-
-L.control.infoBox.location.bounds = function (opts) {
+L.control.infoBox.location.bounds = function(opts) {
 	return new L.Control.InfoBox.Location.Bounds(opts);
 };

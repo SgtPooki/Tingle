@@ -1,4 +1,6 @@
 L.Control.ZLayers = L.Control.Layers.extend({
+  _className: "L.Control.ZLayers",
+
   options: {
     className: "leaflet-control-layers",
     handlerRootNames: [
@@ -377,12 +379,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
   }
 });
 
-L.Control.ZLayers.prototype._className = "L.Control.ZLayers";
-
 L.Control.ZLayers.addInitHook(function(){
   this._area = this.options.width * this.options.length;
 });
 
-L.control.zlayers = function (baseLayers, overlays, options) {
+L.control.zlayers = function(baseLayers, overlays, options) {
 	return new L.Control.ZLayers(baseLayers, overlays, options);
 };

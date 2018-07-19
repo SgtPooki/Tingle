@@ -2,16 +2,8 @@
 // - options: [Object]
 //   - title: [String] The text to optionally place in the header.
 
-L.Control.InfoBox = L.Control.extend({
-  _setDebugNames: function() {
-    this.name = this.__proto__._className + "[" + L.Util.stamp(this) + "]";
-    this._debugName = this.name;
-  },
-
-  initialize: function(opts) {
-    this._setDebugNames();
-    L.setOptions(this, opts);
-  },
+L.Control.InfoBox = L.Control.ZControl.extend({
+  _className: "L.Control.InfoBox",
 
   onAdd: function() {
     var parent = L.DomUtil.create(
@@ -30,15 +22,13 @@ L.Control.InfoBox = L.Control.extend({
     return parent;
   },
 
-  getContent: function() {}
+  getContent: function(parent) {}
 
 	// onRemove: function() {
 	// 	locationInfo.destroy();
 	// };
 });
 
-L.Control.InfoBox.prototype._className = "L.Control.InfoBox";
-
-L.control.infoBox = function (opts) {
+L.control.infoBox = function(opts) {
   return new L.Control.InfoBox(opts);
 };

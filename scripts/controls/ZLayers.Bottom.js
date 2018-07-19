@@ -1,4 +1,6 @@
 L.Control.ZLayersBottom = L.Control.ZLayers.extend({
+  _className: "L.Control.ZLayersBottom",
+
   options: {
     position: 'topleft',
     delay: 0,
@@ -252,8 +254,6 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   }
 });
 
-L.Control.ZLayersBottom.prototype._className = "L.Control.ZLayersBottom";
-
-L.control.zlayersbottom = function (baseLayers, overlays, options) {
+L.control.zlayersbottom = function(baseLayers, overlays, options) {
 	return new L.Control.ZLayersBottom(baseLayers, overlays, options);
 };

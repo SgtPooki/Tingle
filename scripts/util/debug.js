@@ -1,31 +1,31 @@
-// Configure below
 
-var isDebugMode = false;
+// boolean
+// Also used by debugPrint, so 'exported' for now.
+var debugMode = new RegExp("^true$", "i")
+  .test(ZConfig.getConfig("debug.enabled"));
 
-var objectsToTrace = [
-  L.Control.ZLayers,
-  L.Control.ZLayersBottom
-];
+(function() {
 
-var methodsToIgnore = {
-  "L.Control.ZLayersBottom": [
-    "_animate",
-    "drawerTop"
-  ]
-};
+  // [<objectPath>, ...]
+  var objectsToTrace = eval(ZConfig.getConfig("debug.objectsToTrace")) || [];
 
-var debugOptions = {
-  abbvFn: true,
-  argNewLines: false,
-  stringMax: 20,
-  ignore: methodsToIgnore
-};
+  // {"<objectPath>": ["methodName", ...]}
+  var methodsToIgnore = JSON.parse(ZConfig.getConfig("debug.methodsToIgnore") || "{}");
 
-// Configure above
+  // {...}
+  var debugOptions = $.extend({
+    abbvFn: true,
+    argNewLines: false,
+    stringMax: 20,
+    ignore: methodsToIgnore
+  }, JSON.parse(ZConfig.getConfig("debug.options") || "{}"));
 
-if(isDebugMode) {
-  applyFunctionTraceToObjects(
-    objectsToTrace,
-    debugOptions
-  );
-}
+  // Configure above
+
+  if(debugMode) {
+    applyFunctionTraceToObjects(
+      objectsToTrace,
+      debugOptions
+    );
+  }
+})();

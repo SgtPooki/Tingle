@@ -47,6 +47,47 @@
     - Use the next release number as given to the development team.
     - If you need to use a single escape, escape it as such in the Ruby- (and to some extent, Rails-) based migration file: `\\\'`.
 
+## Web Technologies
+
+  - Keep all presentation in the external CSS files!!
+    - Keeps it in one place as is industry standard and easy to follow.  Doesn't clutter HTML.
+    - Doesn't require hefty JavaScript that is also less responsive, so be sure to use media queries when necessary!
+  - Don't use global variables.
+    - It's messy and difficult to refactor, just maybe not in the obvious cases.
+    - We can clean this up over time, and it would be especially helpful and easier when we have an AMD-style framework to work with for dependencies and scoping local variables.
+
+## Leaflet
+
+### New Controls
+
+  - https://leafletjs.com/examples/extending/extending-1-classes.html
+  - https://leafletjs.com/examples/extending/extending-3-controls.html
+  - Made `ZControl` finally, so generally extend from that from now on when you are making a new base class.
+    - We will still add to the `L.Control` namespace for ease of use, readability, and common expectations.
+    - This was added mainly to get the additional functionality to work that is really general, like proper debug names, and option setting.
+    - Currently not sure if there was a way to override or add these methods into `L.Control` itself, but that smells of dirty monkey patching that is prone to error, especially when the core Leaflet library changes.
+    - Don't forget you still need to add this property to the subclass!
+      - `_className: "L.Control.HistoryBox"`
+  - Common functions to override are `initialize`, `onAdd`, and `onRemove`.
+    - `L.ZControl.extend({...`
+
+## UI Config
+  - Finally made a `ZConfig` that may mature further.
+  - Allows reading configuration from a hierarchy of sources,
+    - Currently this includes:
+      - global (`window[...]`) variable
+      - URL parameter
+      - local storage entry
+      - cookie
+      - currently stored value
+  - but primarily serves as a central location for recording and maintaining this data.
+
+  When adding new options, especially with a large group of related ones, give them namespaces so they are ordered alphabetically by their root in the browser's interface.
+
+  TODO: Later I may add a registry of config settings with type information, example enum values when that type is enabled, so that this can be funneled into a dialog for easy control.
+    - Also real-time updating of config settings!
+    - and then types like booleans from strings can be deserialized properly without making the consuming code do it everywhere.
+
 ## Backend
 
   Written in PHP.
@@ -57,6 +98,21 @@
   Then we close it after all `$_SESSION` references have been passed: `session_write_close();`.
 
   Try to issue these commands as close to the block of all session references as possible, since our framework probably does not support concurrency, and this way the lock on the session file can be released and other users requests can continue to be processed after the current.
+
+# Debug
+
+  I have added a debugging, more like a tracing, system that outputs method calls to the console.
+
+  It is configurable through the same `ZConfig` system with the following properties:
+    - `debug.enabled` - [Boolean]
+    - `debug.objectsToTrace` - `[<objectPath>, ...]`
+    - `debug.methodsToIgnore` - `{"<objectPath>": ["methodName", ...]}` - Used in debug options as `ignore`, but provided separately from that setting in the configuration interface.
+    - `debug.options` - [Object]
+      - `abbvFn` - [Boolean] - Abbreviate serialized function arguments in the output to a (much) shorter string, specified by `stringMax`.
+      - `argNewLines` - [Boolean] - Print the list of arguments on a new line.
+      - `stringMax` - [Number] - The number of characters to print for function parameters when `abbvFn` is true/enabled.
+
+  Note: Mixed properties that display their format are parsed as JSON, so don't forget to quote the keys in the objects and only use double quotes for strings!
 
 # Etc.
 

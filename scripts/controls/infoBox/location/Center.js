@@ -3,6 +3,8 @@
 //   - precision: [Number]
 
 L.Control.InfoBox.Location.Center = L.Control.InfoBox.Location.extend({
+  _className: "L.Control.InfoBox.Location.Center",
+
   options: {
     title: "Center Coordinates",
     className: "center"
@@ -23,8 +25,6 @@ L.Control.InfoBox.Location.Center = L.Control.InfoBox.Location.extend({
   }
 });
 
-L.Control.InfoBox.Location.Center.prototype._className = "L.Control.InfoBox.Location.Center";
-
-L.control.infoBox.location.center = function (opts) {
+L.control.infoBox.location.center = function(opts) {
 	return new L.Control.InfoBox.Location.Center(opts);
 };

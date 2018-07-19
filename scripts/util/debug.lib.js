@@ -1,7 +1,7 @@
 var callLevel = 0;
 
 function debugPrint() {
-  if(isDebugMode) {
+  if(debugMode) {
     console.debug(arguments);
   }
 };

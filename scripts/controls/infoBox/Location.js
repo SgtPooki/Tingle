@@ -7,6 +7,8 @@
 // is added again manually.
 
 L.Control.InfoBox.Location = L.Control.InfoBox.extend({
+  _className: "L.Control.InfoBox.Location",
+
   options: {
     title: "Coordinates"
   },
@@ -59,8 +61,6 @@ L.Control.InfoBox.Location = L.Control.InfoBox.extend({
   }
 });
 
-L.Control.InfoBox.Location.prototype._className = "L.Control.InfoBox.Location";
-
-L.control.infoBox.location = function (opts) {
+L.control.infoBox.location = function(opts) {
   return new L.Control.InfoBox.Location(opts);
 };
