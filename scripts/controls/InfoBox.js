@@ -6,23 +6,20 @@ L.Control.InfoBox = L.Control.ZControl.extend({
   _className: "L.Control.InfoBox",
 
   onAdd: function() {
-    var parent = L.DomUtil.create(
-      'span',
-      "infobox " + (this.options.className || "")
-    );
+    L.Control.ZControl.prototype.onAdd.call(this);
+    $(this.domNode).addClass("infobox");
+
     if(this.options.title) {
-      var header = L.DomUtil.create('div', 'row header', parent);
+      var header = L.DomUtil.create('div', 'row header', this.domNode);
       header.append(this.options.title);
     }
 
-    L.DomUtil.create('div', 'infobox-separator', parent);
+    L.DomUtil.create('div', 'infobox-separator', this.domNode);
 
-    this.getContent(parent);
+    this.contentNode = L.DomUtil.create('div', 'content', this.domNode);
 
-    return parent;
+    return this.domNode;
   },
-
-  getContent: function(parent) {}
 
 	// onRemove: function() {
 	// 	locationInfo.destroy();

@@ -6,6 +6,8 @@
 //   - searchWaitCheckTimeThreshold: [Number] Amount of millisseconds to wait until a search is executed automatically for the incremental search method.
 //   - updateProgressTotalStepsAmount: [Number] When showing the progess bar for the incremental search method, how granularly it should update.
 //   - clearSearchFieldFirst: [Boolean] Whether actions like pressing the escape key will *only* clear a non-empty search query field.
+// - Events:
+//   - search: ("<query>")
 
 function MarkerSearchField(opts) {
   this._initSettings(opts);

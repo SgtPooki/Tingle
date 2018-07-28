@@ -1,6 +1,8 @@
 // Bounds
 // - opts: [Object]
 //   - precision: [Number]
+// - Methods
+//   - generateLink: Creates a link based on the current location with a parameter that can be used to modify the map's starting area.
 
 L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
   _className: "L.Control.InfoBox.Location.Bounds",
@@ -17,14 +19,18 @@ L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
     this.sw = {};
   },
 
-  getContent: function(parent) {
-    this._buildActionGroup(parent);
+  onAdd: function(map) {
+    L.Control.InfoBox.Location.prototype.onAdd.call(this, map);
 
-    this.createColumn("South West", this.sw, parent);
-    this.createColumn("North East", this.ne, parent);
+    this._buildActionGroup();
+
+    this._createColumn("South West", this.sw, this.contentNode);
+    this._createColumn("North East", this.ne, this.contentNode);
+
+    return this.domNode;
   },
 
-  createColumn: function(titleText, rootObject, parent) {
+  _createColumn: function(titleText, rootObject, parent) {
     var column = L.DomUtil.create('div', 'column', parent);
 
     if(titleText) {
@@ -34,13 +40,13 @@ L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
       L.DomUtil.create('div', 'infobox-separator', column);
     }
 
-    var latRow = this.createRow('Latitude: ', column);
+    var latRow = this._createRow('Latitude: ', column);
     rootObject.latValueCell = $('.value', latRow);
-    var lngRow = this.createRow('Longitude: ', column);
+    var lngRow = this._createRow('Longitude: ', column);
     rootObject.lngValueCell = $('.value', lngRow);
   },
 
-  _buildActionGroup: function(parent) {
+  _buildActionGroup: function() {
     var actionGroup = L.DomUtil.create('div', 'action-group');
 
     var copyLink = new CopyLink({ content: this.generateLink.bind(this) });
@@ -49,7 +55,7 @@ L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
     var link = new Link({ content: this.generateLink.bind(this) });
     $(actionGroup).append(link.domNode);
 
-    $(parent).append(actionGroup);
+    $(this.contentNode).append(actionGroup);
   },
 
   _updateCoordsInfo: function() {

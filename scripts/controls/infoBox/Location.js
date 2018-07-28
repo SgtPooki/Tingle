@@ -26,20 +26,19 @@ L.Control.InfoBox.Location = L.Control.InfoBox.extend({
   onAdd: function(map) {
     this._map = map;
 
-    var container = L.Control.InfoBox.prototype.onAdd.call(this);
-    $(container).addClass("location");
+    L.Control.InfoBox.prototype.onAdd.call(this);
+    $(this.domNode).addClass("location");
 
-    this._updateCoordsInfo(map);
     this._addMapHandler(map);
 
-    return container;
+    return this.domNode;
   },
 
 	// onRemove: function() {
 	// 	locationInfo.destroy();
 	// };
 
-  createRow: function(titleText, parent) {
+  _createRow: function(titleText, parent) {
     var row = L.DomUtil.create('div', 'row', parent);
 
     var titleCell = L.DomUtil.create('span', 'title', row);

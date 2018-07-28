@@ -329,12 +329,13 @@ body,
 
 /*** SEARCH CONTENT ***/
 
-.menu-cat-content-inner .leaflet-control-layers-separator,
+.list-view .leaflet-control-layers-separator,
 [class $="-separator"] {
 	margin: 0px;
 }
 
-.menu-cat-content-inner .no-results {
+.list-view .no-results,
+.list-view .no-entries {
 	text-align: center;
 	padding: 10px;
 	margin-left: 20px;
@@ -347,7 +348,7 @@ body,
 	padding: 0px;
 }
 
-.marker-list-view .results .header {
+.list-view .results .header {
 	position: sticky;
 	top: 0px;
 	background-color: rgba(0, 0, 0, 0.8);
@@ -428,6 +429,15 @@ body,
 	font-size: 12px;
 }
 
+/*** History Content ***/
+
+.infobox.history.leaflet-control {
+  min-width: 250px;
+}
+
+.list-view .no-entries {
+  margin-left: 0px;
+}
 
 /*** MARKER CONTENT ***/
 

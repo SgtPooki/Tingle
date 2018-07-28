@@ -10,12 +10,16 @@ L.Control.InfoBox.Location.Center = L.Control.InfoBox.Location.extend({
     className: "center"
   },
 
-  getContent: function(parent) {
-    var latRow = this.createRow('Latitude: ', parent);
+  onAdd: function(map) {
+    L.Control.InfoBox.Location.prototype.onAdd.call(this, map);
+
+    var latRow = this._createRow('Latitude: ', this.contentNode);
     this.latValueCell = $('.value', latRow);
 
-    var longRow = this.createRow('Longitude: ', parent);
+    var longRow = this._createRow('Longitude: ', this.contentNode);
     this.lngValueCell = $('.value', longRow);
+
+    return this.domNode;
   },
 
   _updateCoordsInfo: function() {
