@@ -14,11 +14,6 @@ L.Control.ZControl = L.Control.extend({
     className: "zcontrol"
   },
 
-  _setDebugNames: function() {
-    this.name = this.__proto__._className + "[" + L.Util.stamp(this) + "]";
-    this._debugName = this.name;
-  },
-
   initialize: function(opts) {
     this._setDebugNames();
     L.setOptions(this, opts);
@@ -31,6 +26,7 @@ L.Control.ZControl = L.Control.extend({
     );
   }
 });
+$.extend(L.Control.ZControl.prototype, DebugMixin.prototype);
 
 L.control.zControl = function(opts) {
   return new L.Control.ZControl(opts);

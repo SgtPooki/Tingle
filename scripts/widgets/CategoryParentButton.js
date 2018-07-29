@@ -8,16 +8,13 @@
 //     - childCategoryButtons: [Array [Object]] - List of child objects to control
 
 function CategoryParentButton(opts) {
+  this._setDebugNames();
   CategoryButton.call(this, opts);
 };
 
 CategoryParentButton.prototype = Object.create(CategoryButton.prototype);
 CategoryParentButton.prototype.constructor = CategoryParentButton;
-
-CategoryButton.prototype._setDebugNames = function() {
-  this.name = this.__proto__._className + "[" + L.Util.stamp(this) + "]";
-  this._debugName = this.name;
-};
+$.extend(CategoryParentButton.prototype, DebugMixin.prototype);
 
 CategoryParentButton.prototype._initSettings = function(opts) {
   CategoryButton.prototype._initSettings.call(this, opts);

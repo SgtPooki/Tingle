@@ -6,15 +6,20 @@
 //   - searchWaitCheckTimeThreshold: [Number] Amount of millisseconds to wait until a search is executed automatically for the incremental search method.
 //   - updateProgressTotalStepsAmount: [Number] When showing the progess bar for the incremental search method, how granularly it should update.
 //   - clearSearchFieldFirst: [Boolean] Whether actions like pressing the escape key will *only* clear a non-empty search query field.
+// - Methods:
+//   - focus(): Sets the text cursor inside of the input field.
+//   - clear(): Clears the input field of text and of the clear 'x' overlay.
 // - Events:
 //   - search: ("<query>")
 
 function MarkerSearchField(opts) {
+  this._setDebugNames();
   this._initSettings(opts);
   this._initDOMElements();
   this._setupInputListeners();
 };
-
+$.extend(MarkerSearchField.prototype, DebugMixin.prototype);
+MarkerSearchField.prototype._className = "MarkerSearchField";
 
 MarkerSearchField.prototype._initDOMElements = function() {
   this.domNode = $('' +

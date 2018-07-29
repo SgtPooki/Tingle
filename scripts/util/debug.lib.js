@@ -12,7 +12,35 @@ function applyFunctionTraceToObjects(objectsToTrace, options) {
   });
 };
 
-// TODO: Would we want to debug instance methods along with the class' prototype's methods as well?
+function generateReplacementFunction(extraFn, objectName, fnName, prop, options) {
+  return function() {
+    extraFn.call(
+      this,
+      true,
+      objectName,
+      fnName,
+      options,
+      arguments
+    );
+
+    let returnValue = prop.apply(this, arguments);
+
+    extraFn.call(
+      this,
+      false,
+      objectName,
+      fnName,
+      options,
+      arguments,
+      returnValue
+    );
+
+    return returnValue;
+  };
+};
+
+// Inspiration: https://stackoverflow.com/a/38581323/1091943
+// TODO: Would we want to debug instance methods (added after instantiation?) along with the class' prototype's methods as well?
 // If so, refactor into a function doing 2 passes, 1 for each set.
 // https://stackoverflow.com/a/38581438/1091943
 function inject(object, extraFn, options = {}) {
@@ -22,6 +50,7 @@ function inject(object, extraFn, options = {}) {
     object._className ||
     object._debugName ||
     object.displayName ||
+    objectPrototype.constructor.name || // Is this right/better b/w the class and instance?
     object.name
   );
 
@@ -32,42 +61,22 @@ function inject(object, extraFn, options = {}) {
       !options.ignore[objectName] ||
       !options.ignore[objectName].includes(propName)
     )) {
-      objectPrototype[propName] = (function(fnName) {
-        return function() {
-          extraFn.call(
-            this,
-            true,
-            objectName,
-            fnName,
-            options,
-            arguments
-          );
-
-          let returnValue = prop.apply(this, arguments);
-
-          extraFn.call(
-            this,
-            false,
-            objectName,
-            fnName,
-            options,
-            arguments
-          );
-
-          return returnValue;
-        };
-      })(propName);
+      objectPrototype[propName] = generateReplacementFunction(extraFn, objectName, propName, prop, options);
     }
   }
 };
 
-function logFnCall(before, className, fnName, options = {}, args) {
+function logFnCall(before, className, fnName, options = {}, args, returnValue) {
   if(options.abbvFn === undefined) options.abbvFn = true;
   if(options.argNewLines === undefined) options.argNewLines = false;
   if(options.colors === undefined) options.colors = true;
   if(options.stringMax === undefined) options.stringMax = 20;
 
   let colors = {
+    position: {
+      before: "green",
+      after: "brown"
+    },
     obj: "yellow",
     class: "orange",
     fn: "skyblue",
@@ -86,7 +95,7 @@ function logFnCall(before, className, fnName, options = {}, args) {
     : "%cLeaving  %c<<<"
   );
   colorList = colorList.concat([
-    ((before) ? "green" : "brown"),
+    ((before) ? colors.position.before : colors.position.after),
     colors.punct
   ]);
 
@@ -101,12 +110,13 @@ function logFnCall(before, className, fnName, options = {}, args) {
   let headerString = '' +
     '(' + callLevel + ') ' +
     positionText + ' ' +
-    '%c' + objectName + ': ' +
+    '%c' + objectName + '%c: ' +
     '%c' + className + '.' +
     '%c' + fnName + '%c('
   ;
   colorList = colorList.concat([
     colors.obj,
+    colors.punct,
     colors.class,
     colors.fn,
     colors.punct
@@ -144,6 +154,11 @@ function logFnCall(before, className, fnName, options = {}, args) {
 
   let footerString = '%c)';
   colorList.push(colors.punct);
+
+  if(!before) {
+    footerString += ':%c ' + returnValue;
+    colorList.push(colors.term);
+  }
 
   let finalString = '' +
     headerString +

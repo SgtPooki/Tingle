@@ -25,7 +25,7 @@ SearchArea.prototype._initState = function(opts) {
   });
   searchMarkerHandler.addHandler("markerListViewBuilt", opts.markerListViewBuiltHandler);
 
-  zMap.addHandler("markersAdded", function(markers) {
+  zMap.addEventHandler("markersAdded", function(markers) {
     searchMarkerHandler.setMarkers(markers);
   });
 
