@@ -28,15 +28,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
   // - accountPage
   // - search
 
-  _setDebugNames: function() {
-    this.name = this.__proto__._className + "[" + L.Util.stamp(this) + "]";
-    this._debugName = this.name;
-  },
-
   initialize: function (baseLayers, categoryTree, options) {
-    this._setDebugNames();
-    this.options = this.options; // Fixes `hasOwnProperty` issue in `setOptions` to be `true` now....
-    L.Util.setOptions(this, options); // Same as L.setOptions in the Leaflet doc.  I like using this namespace better.  Shows intent more clearly.
+    L.Control.ZControl.prototype.initialize.call(this);
 
     this._initHandlers();
     this._attachHandlers();

@@ -4,8 +4,15 @@
 // - options: [Object]
 //   - className: [String] The class name to add to the root element.
 
-// By practice, we will still add new controls to the
-// `L.Control` namespace, for good looks :).
+// By practice, we will still add new controls to the base
+// `L.Control` namespace and not under this one, for good looks :).
+
+// TODO: Maybe added this functionality to the base L.Control class that other
+// built-in Leaflet classes inherit from like the Layers Controls.
+
+// For now, could simply issue this for some convenience without needed to work
+// break the inheritence hierarchy through extending:
+// `L.Control.ZControl.prototype.initialize.call(this);`
 
 L.Control.ZControl = L.Control.extend({
   _className: "L.Control.ZControl",
@@ -16,7 +23,8 @@ L.Control.ZControl = L.Control.extend({
 
   initialize: function(opts) {
     this._setDebugNames();
-    L.setOptions(this, opts);
+    this.options = this.options; // Fixes `hasOwnProperty` issue in `setOptions` to be `true` now....
+    L.setOptions(this, opts); // Same as L.setOptions in the Leaflet doc.  I like using this namespace better.  Shows intent more clearly.
   },
 
   onAdd: function() {
