@@ -29,7 +29,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   // - search
 
   initialize: function (baseLayers, categoryTree, options) {
-    L.Control.ZControl.prototype.initialize.call(this);
+    L.Control.ZControl.prototype.initialize.call(this, options);
 
     this._initHandlers();
     this._attachHandlers();
@@ -371,6 +371,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     }
   }
 });
+$.extend(L.Control.ZLayers.prototype, DebugMixin.prototype);
+
 
 L.Control.ZLayers.addInitHook(function(){
   this._area = this.options.width * this.options.length;

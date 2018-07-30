@@ -1,5 +1,5 @@
-// ZControl - The default base Leaflet control the Zelda Maps
-//  project should use for useful functions applicable to
+// ZControl - The base Leaflet control class for the Zelda Maps
+//  project.  Should be useful for convenient helper functions applicable to
 //  all derived controls.
 // - options: [Object]
 //   - className: [String] The class name to add to the root element.
