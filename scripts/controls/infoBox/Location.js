@@ -50,7 +50,7 @@ L.Control.InfoBox.Location = L.Control.InfoBox.extend({
   },
 
   _addMapHandler: function(map) {
-    L.DomEvent.on(map, 'move', function(event) {
+    L.DomEvent.on(map, 'load move', function(event) {
       this._updateCoordsInfo(event.target);
     }.bind(this));
   },

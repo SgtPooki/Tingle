@@ -592,8 +592,7 @@ ZMap.prototype.buildMap = function() {
                                               });
    }
 
-   map = L.map('map', { center:      new L.LatLng(mapOptions.centerY,mapOptions.centerX)
-                      , zoom:        mapOptions.zoom
+   map = L.map('map', { zoom:        mapOptions.zoom
                       , zoomSnap:    mapOptions.zoomSnap
                       , zoomDelta:   mapOptions.zoomDelta
                       , zoomControl: false
@@ -653,7 +652,9 @@ ZMap.prototype.buildMap = function() {
 
    //Change visible region to that specified by the corner coords if relevant query strings are present
    if (mapOptions.startArea) {
-      map.fitBounds(mapOptions.startArea);
+     map.fitBounds(mapOptions.startArea);
+   } else {
+     map.setView([mapOptions.centerY, mapOptions.centerX]); // Loading map center later so controls that hook the 'load' event have a chance to fire now!
    }
 
    map.on('moveend', function(e) {
