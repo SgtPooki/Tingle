@@ -636,9 +636,19 @@ ZMap.prototype.buildMap = function() {
         mapControlOptions
       );
       L.control.zoom({ position:'bottomright' }).addTo(map);
-      if(mapOptions.showInfoControls) {
+      if(
+        new RegExp("^true$", "i")
+        .test(ZConfig.getConfig("showInfoControls"))
+      ) {
         L.control.infoBox.location.center({ position: 'bottomleft' }).addTo(map);
         L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
+      }
+      if(
+        new RegExp("^true$", "i")
+        .test(ZConfig.getConfig("showHistoryControl"))
+        && !L.Browser.mobile
+      ) {
+        historyBox = L.control.infoBox.listBox.historyBox({ position: 'topright' }).addTo(map);
       }
    }
    //@TODO: REDO!
