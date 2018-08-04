@@ -1,3 +1,14 @@
+// - Config:
+//   - debug.enabled: [String]
+//   - debug.objectsToTrace: [Array]
+//     - <objectToTrace>: [String]
+//   - debug.methodsToIgnore: [Object]
+//     - <objectToTrace>: [Array]
+//       - <methodToIgnore...>: [String]
+//   - debug.options: [Object]
+//     - abbvFn: [Boolean]
+//     - argNewLines: [Boolean]
+//     - stringMax: [Number]
 
 // boolean
 // Also used by debugPrint, so 'exported' for now.

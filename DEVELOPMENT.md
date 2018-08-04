@@ -60,7 +60,6 @@
 
   For stubbing out functions that subclasses or anything can override, let's use jQuery's `$.noop` single function, instead of generating new anonymous functions everywhere.
 
-
 ### POJ(s)Os
 
   The name is a take-off from Plain Old Java Objects, I've been making JavaScript objects directly utilizing the language's prototype features to construct classes.
@@ -69,13 +68,15 @@
   - Dev/API Doc
     - I may be mainly only documenting my POJOs, but it could apply to any class I've started to make.
     - Format:
-      - Name
-        - opts (As expected.  This seems to be a convention and useful method in loosely-typed and still somewhat simplistic JavaScript transforming argument to parameter passing helpfullu.)
+      - Name - Description
+        - opts (As expected.  This seems to be a convention and useful method in loosely-typed and still somewhat simplistic JavaScript transforming argument to parameter passing helpfully.)
           - <objectOptionName>: [Type] - Description
         - Events: (Usually what the class publishes)
-          - <eventName>: (<argument>...)
+          - <eventName>: (<argument>...) - Description
         - Methods: (The ones in the public API for the class others can access that are not prefixed with an underscore.)
-          - <name>(<Argument>...):
+          - <name>(<Argument>...): - Description
+        - Config
+          - <name>: [Type] - Description
   - Main Function Definition
     - `this._setDebugNames();`
     - `<superClass>.call(this, opts);`
@@ -120,7 +121,7 @@
   - Namespaced in upper camelcase.
   - Dev/API Doc
     - Format:
-      - Name
+      - Name - Description
         - options: [Object] (As expected with jQuery classes.)
   - Setting the superclass
     - `L.ZControl.extend({...`

@@ -6,7 +6,7 @@ function CategoryMenu(opts) {
 CategoryMenu.prototype._initSettings = function(opts) {
   this.defaultToggledState = getSetOrDefaultValue(opts.defaultToggledState, false);
 
-  this.categorySelectionMethod = getSetOrDefaultValue(opts.categorySelectionMethod, ZConfig.getConfig("categorySelectionMethod"));
+  this.categorySelectionMethod = opts.categorySelectionMethod;
   this.automaticToggle = getSetOrDefaultValue(opts.automaticToggle, !(this.categorySelectionMethod == "focus"));
 };
 

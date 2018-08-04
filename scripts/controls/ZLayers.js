@@ -1,3 +1,7 @@
+// ZLayers - The main, desktop-specific control for the site.
+// - Config:
+//   - categorySelectionMethod: [String] The different methods for interpreting user input for the categories.  Currently supports "exact" (any other really) and "focus" (Jason's wanted wacky/'intelligent' style).
+
 L.Control.ZLayers = L.Control.Layers.extend({
   _className: "L.Control.ZLayers",
 

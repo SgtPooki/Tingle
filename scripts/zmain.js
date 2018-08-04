@@ -137,6 +137,7 @@ function getMarkers(){
 };
 
 zMap = new ZMap();
+
 var gameId = getUrlParam("game");
 
 // Get value of parameters

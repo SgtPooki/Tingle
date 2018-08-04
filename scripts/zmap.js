@@ -1,7 +1,10 @@
 // ZMap - Contains the wrapper for the main Leaflet map display, including its configuration, marker handling, and even the drawer forms (for now...).
-// - Events
+// - Events:
 //   - markersAdded: ([<marker>...])
 //   - uiLoaded: ()
+// - Config:
+//   - showInfoControls: [Boolean] Shows the Bounds and Center Location Info controls.
+//   - showHistoryControl: [Boolean] Shows the History Action List/Log Info control.
 
 function ZMap() {
    var _this;
@@ -184,7 +187,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
       mapOptions = vMapOptions;
    }
 
-   if(!mapOptions.categorySelectionMethod) mapOptions.categorySelectionMethod = ZConfig.getConfig("categorySelectionMethod");
+   if(!mapOptions.categorySelectionMethod) mapOptions.categorySelectionMethod = "exact";
 
   // markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
 

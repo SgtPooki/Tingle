@@ -10,22 +10,29 @@
 //   - focus(): Sets the text cursor inside of the input field.
 //   - clear(): Clears the input field of text and of the clear 'x' overlay.
 // - Events:
-//   - search: ("<query>")
+//   - searchExecuted: ("<query>")
 
 function MarkerSearchField(opts) {
   this._setDebugNames();
+  this._initialize();
+  this._initHandlers();
   this._initSettings(opts);
   this._initDOMElements();
   this._setupInputListeners();
 };
 $.extend(MarkerSearchField.prototype, DebugMixin.prototype);
+$.extend(MarkerSearchField.prototype, EventHandlersMixin.prototype);
 MarkerSearchField.prototype._className = "MarkerSearchField";
+
+MarkerSearchField.prototype._initialize = function() {
+  this.eventNames = ['searchExecuted'];
+},
 
 MarkerSearchField.prototype._initDOMElements = function() {
   this.domNode = $('' +
     '<div class="form-group search-box">' +
       '<div class="icon-addon addon-sm">' +
-        '<input type="text" placeholder="Search Breath of the Wild" class="form-control marker-search" id="marker-search">' +
+        '<input type="text" placeholder="Search Breath of the Wild" class="form-control marker-search" id="marker-search">' + // TODO: Extract string for translation.
         '<a class="button icon-close2" href="javascript:;">×</a>' +
         '<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email">' +
         '</label>' +
@@ -183,7 +190,7 @@ MarkerSearchField.prototype._startProgressBar = function() {
 
 
 MarkerSearchField.prototype._executeSearch = function() {
-  this.domNode.trigger('search', this._getQuery());
+  this.triggerEventHandlers('searchExecuted', this._getQuery());
 };
 
 

@@ -16,17 +16,17 @@ SearchArea.prototype._initState = function(opts) {
   });
   $(this.markerSearchField.domNode).appendTo(opts.parent);
 
-  var searchMarkerHandler = new SearchMarkerHandler({
+  this.searchMarkerHandler = new SearchMarkerHandler({
     markerSearchField: this.markerSearchField,
     showSearchStats: true,
-    markerSearchClick: function(marker, e) {
-      zMap.goTo({ marker: marker.id });
+    markerSearchClick: function(opts, e) {
+      zMap.goTo({ marker: opts.marker.id });
     }
   });
-  searchMarkerHandler.addHandler("markerListViewBuilt", opts.markerListViewBuiltHandler);
+  this.searchMarkerHandler.addEventHandler("markerListViewBuilt", opts.markerListViewBuiltHandler);
 
-  zMap.addEventHandler("markersAdded", function(markers) {
-    searchMarkerHandler.setMarkers(markers);
+  zMap.addEventHandler("markersAdded", (markers) => {
+    this.searchMarkerHandler.setMarkers(markers);
   });
 
   L.DomEvent.disableClickPropagation(opts.parent);

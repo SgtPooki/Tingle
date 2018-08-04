@@ -4,10 +4,14 @@
 //   - markerListView: [Object] - The list view to use.  Creates one if not provided.  Applies configuration whether to create a plain or search stats list view.
 //   - showSearchStats: [Boolean] - Determines which list view to create, if one is not provided: a plain or search stats version.
 //   - markerSearchClick: [Function] - The function to execute when a marker search entry in the list is clicked.
+// - Methods:
+//   - setMarkers(<marker...>):
 // - Events:
 //   - resultsReceived: ([<result>...])
 //   - markerListViewBuilt: (MarkerListView)
 //   - ready: ()
+// - Config:
+//   - initialSearchQuery: [String] The query to run upon not only self-initialization, but also after receiving the marker data to search.
 
 function SearchMarkerHandler(opts) {
   this._setDebugNames();
@@ -22,7 +26,6 @@ $.extend(SearchMarkerHandler.prototype, EventHandlersMixin.prototype);
 
 SearchMarkerHandler.prototype._initialize = function() {
   this.eventNames = [
-    'ready',
     'resultsReceived',
     'markerListViewBuilt'
   ];
@@ -53,8 +56,20 @@ SearchMarkerHandler.prototype._initComponents = function(opts) {
 
 SearchMarkerHandler.prototype.setMarkers = function(markers) {
   this.searcher = new SearcherFuse({ targetSearchMaterial: markers });
-  this.triggerEventHandlers('ready');
+  this._checkForInitialSearchQuery();
 };
+
+SearchMarkerHandler.prototype._checkForInitialSearchQuery = function() {
+  if(!this.initialSearchQuery) {
+    this.initialSearchQuery = ZConfig.getConfig("initialSearchQuery");
+    if(this.initialSearchQuery) {
+      $(this.markerSearchField.searchInput)
+        .prop("value", this.initialSearchQuery)
+        .trigger("input")
+      ;
+    }
+  }
+}
 
 SearchMarkerHandler.prototype._setupUIInteraction = function() {
   this.markerSearchField.addEventHandler('searchExecuted', this.search.bind(this));
