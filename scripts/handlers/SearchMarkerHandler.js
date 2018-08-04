@@ -4,14 +4,29 @@
 //   - markerListView: [Object] - The list view to use.  Creates one if not provided.  Applies configuration whether to create a plain or search stats list view.
 //   - showSearchStats: [Boolean] - Determines which list view to create, if one is not provided: a plain or search stats version.
 //   - markerSearchClick: [Function] - The function to execute when a marker search entry in the list is clicked.
+// - Events:
+//   - resultsReceived: ([<result>...])
+//   - markerListViewBuilt: (MarkerListView)
+//   - ready: ()
 
 function SearchMarkerHandler(opts) {
   this._setDebugNames();
+  this._initialize();
+  this._initHandlers();
   this._initSettings(opts);
   this._initComponents(opts);
   this._setupUIInteraction();
 };
 $.extend(SearchMarkerHandler.prototype, DebugMixin.prototype);
+$.extend(SearchMarkerHandler.prototype, EventHandlersMixin.prototype);
+
+SearchMarkerHandler.prototype._initialize = function() {
+  this.eventNames = [
+    'ready',
+    'resultsReceived',
+    'markerListViewBuilt'
+  ];
+},
 
 SearchMarkerHandler.prototype._initSettings = function(opts) {
   this.markerSearchField = opts.markerSearchField;
@@ -20,10 +35,6 @@ SearchMarkerHandler.prototype._initSettings = function(opts) {
   this.showSearchStats = getSetOrDefaultValue(opts.showSearchStats, false);
 
   opts["markerEntryClick"] = Object.pop(opts, "markerSearchClick");
-
-  this.handlers = {
-    markerListViewBuilt: []
-  };
 };
 
 SearchMarkerHandler.prototype._initComponents = function(opts) {
@@ -42,22 +53,21 @@ SearchMarkerHandler.prototype._initComponents = function(opts) {
 
 SearchMarkerHandler.prototype.setMarkers = function(markers) {
   this.searcher = new SearcherFuse({ targetSearchMaterial: markers });
+  this.triggerEventHandlers('ready');
 };
 
 SearchMarkerHandler.prototype._setupUIInteraction = function() {
-  this.markerSearchField.domNode.on('search', this._displayResults.bind(this));
+  this.markerSearchField.addEventHandler('searchExecuted', this.search.bind(this));
 };
 
-SearchMarkerHandler.prototype._displayResults = function(e, query) {
+SearchMarkerHandler.prototype.search = function(query) {
   var results = this.searcher.search(query);
+  this._displayResults(query, results);
+};
+
+SearchMarkerHandler.prototype._displayResults = function(query, results) {
   if (!this.showSearchStats) results = results.map(function(entry) { return entry.item; });
   this.markerListView.showMarkers(query, results);
-  this.handlers["markerListViewBuilt"].forEach(function(handler) {
-    handler(this.markerListView);
-  }, this);
-};
-
-// TODO: Make this a generic mixin, probably automatically included in all widgets, or even use a JS framework that does this already!!
-SearchMarkerHandler.prototype.addHandler = function(eventName, handleFunction) {
-  this.handlers[eventName].push(handleFunction);
+  this.triggerEventHandlers("resultsReceived", results);
+  this.triggerEventHandlers("markerListViewBuilt", this.markerListView); // Move this into `markerListView`?  IoC by passing in the search system to fire the results event?
 };

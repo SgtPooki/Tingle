@@ -1,4 +1,8 @@
 // ZMap - Contains the wrapper for the main Leaflet map display, including its configuration, marker handling, and even the drawer forms (for now...).
+// - Events
+//   - markersAdded: ([<marker>...])
+//   - uiLoaded: ()
+
 function ZMap() {
    var _this;
 
@@ -86,7 +90,7 @@ function ZMap() {
       GO_TO_MARKER_ERROR : "I AM ERROR. Marker %1 couldn't be found on this map.",
    }
 
-   this.eventNames = ["markersAdded"];
+   this.eventNames = ["uiLoaded", "markersAdded"];
    this._initHandlers();
 };
 $.extend(ZMap.prototype, EventHandlersMixin.prototype);
