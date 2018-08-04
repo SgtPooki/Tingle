@@ -6,10 +6,12 @@
 //   - markerSearchClick: [Function] - The function to execute when a marker search entry in the list is clicked.
 
 function SearchMarkerHandler(opts) {
+  this._setDebugNames();
   this._initSettings(opts);
   this._initComponents(opts);
   this._setupUIInteraction();
 };
+$.extend(SearchMarkerHandler.prototype, DebugMixin.prototype);
 
 SearchMarkerHandler.prototype._initSettings = function(opts) {
   this.markerSearchField = opts.markerSearchField;

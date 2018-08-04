@@ -269,7 +269,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   onRemove: function (map) {},
 
-  _removeLayers: function() {},
+  _removeLayers: $.noop,
 
 
   _addLayer: function (layer, name, overlay, instanceLayer) {},

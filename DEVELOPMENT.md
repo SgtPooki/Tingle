@@ -56,6 +56,55 @@
     - It's messy and difficult to refactor, just maybe not in the obvious cases.
     - We can clean this up over time, and it would be especially helpful and easier when we have an AMD-style framework to work with for dependencies and scoping local variables.
 
+## Any Object tips
+
+  For stubbing out functions that subclasses or anything can override, let's use jQuery's `$.noop` single function, instead of generating new anonymous functions everywhere.
+
+
+### POJ(s)Os
+
+  The name is a take-off from Plain Old Java Objects, I've been making JavaScript objects directly utilizing the language's prototype features to construct classes.
+  We are using mildly jQuery elsewhere in the project, but I haven't been using its widgeting system.
+  Here are the current steps I use to build a new class with any conveniences added:
+  - Dev/API Doc
+    - I may be mainly only documenting my POJOs, but it could apply to any class I've started to make.
+    - Format:
+      - Name
+        - opts (As expected.  This seems to be a convention and useful method in loosely-typed and still somewhat simplistic JavaScript transforming argument to parameter passing helpfullu.)
+          - <objectOptionName>: [Type] - Description
+        - Events: (Usually what the class publishes)
+          - <eventName>: (<argument>...)
+        - Methods: (The ones in the public API for the class others can access that are not prefixed with an underscore.)
+          - <name>(<Argument>...):
+  - Main Function Definition
+    - `this._setDebugNames();`
+    - `<superClass>.call(this, opts);`
+  - Setting the superclass (while keeping the sub-class' constructor)
+    - Currently I'm using a more 'pure' method currently recommended by Mozilla and the ES6 standard I believe:
+      - ```
+        <subClass>.prototype = Object.create(<superClass>.prototype);
+        <subClass>.prototype.constructor = <subClass>;
+        ```
+      - At least this it good because it has less dependencies, and also proves itself to be correct for that reason.
+    - Alternative method involving jQuery
+      - `$.extend(<subClass>.prototype, DebugMixin.prototype);`
+      - This may work, but is not heavily tested.  I am currently assuming it is the same as above.
+      - I mainly use this for including mixins.
+  - Including useful Mixins (at least in the root ancestor super class)
+    - `$.extend(<subClass>.prototype, DebugMixin.prototype);`
+    - Also others as needed:
+      - `EventHandlersMixin`
+      - ZMap currently has another type of handler system, that looks like events, and is centered around method calls, if I ever want to extract that, but I think the better solution is better object inheritance.
+  - Functions
+    - Common ones include:
+      - `_initSettings`, `_initDOMElements` and/or `_initTemplate`,
+      - Set `this.domNode` in `_initDOMElements` so consuming classes can expect to attach this element.
+    - Adding self-defined functions to the prototype for all instances to access.
+    - It may be more readable and concise to define them all in one object block and assignment, rather than individual assignment statements per function.
+    - Calling super method
+      - Make sure to pick the correct class in the hierarchy that contains the appropriate method
+      - `<ancestor>.prototype.<methodName>.call(this, opts);`
+
 ## Leaflet
 
 ### New Controls
@@ -68,8 +117,21 @@
     - Currently not sure if there was a way to override or add these methods into `L.Control` itself, but that smells of dirty monkey patching that is prone to error, especially when the core Leaflet library changes.
     - Don't forget you still need to add this property to the subclass!
       - `_className: "L.Control.HistoryBox"`
-  - Common functions to override are `initialize`, `onAdd`, and `onRemove`.
+  - Namespaced in upper camelcase.
+  - Dev/API Doc
+    - Format:
+      - Name
+        - options: [Object] (As expected with jQuery classes.)
+  - Setting the superclass
     - `L.ZControl.extend({...`
+  - It is more useful to add the `_className` property for debugging symbol resolution in the Leaflet classes.
+    - This is because Leaflet instantiates the classes into a variable and they all take on that nonspecific name.
+  - Functions
+    - Common ones include:
+      - `initialize`, `onAdd`, and `onRemove`.
+    - Calling super method
+  - Factory method
+    - Same namespace, just lower camelcased.
 
 ## UI Config
   - Finally made a `ZConfig` that may mature further.
@@ -81,6 +143,9 @@
       - cookie
       - currently stored value
   - but primarily serves as a central location for recording and maintaining this data.
+  Usage: ZConfig.getConfig("<namespace>.<property>")
+    - Boolean: new RegExp("^true$", "i").test(<propertyValue>)
+    - String: As-is (This is the native serialized format.)
 
   When adding new options, especially with a large group of related ones, give them namespaces so they are ordered alphabetically by their root in the browser's interface.
 

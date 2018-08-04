@@ -6,6 +6,8 @@
 //     - color: [String]
 //     - img: [String] - Class name suffix for child category icon selection.
 //     - childCategoryButtons: [Array [Object]] - List of child objects to control
+//  - Methods:
+//   - addChild(<childCategoryButton>) - The buttons to toggle when its own state is toggled.
 
 function CategoryParentButton(opts) {
   this._setDebugNames();

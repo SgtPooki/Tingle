@@ -1,3 +1,4 @@
+// ZMap - Contains the wrapper for the main Leaflet map display, including its configuration, marker handling, and even the drawer forms (for now...).
 function ZMap() {
    var _this;
 
