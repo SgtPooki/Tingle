@@ -1,11 +1,15 @@
 // MarkerListView
 // - opts: [Object] Typical options object.
 //   - markerEntryClick: [Function] The function to execute when a marker entry in the list is clicked.
+// - Methods
+//   - showMarkers(<query>, <marker...>)
 
 function MarkerListView(opts) {
-  ListView.call(this, $.extend(this.options, opts));
+  ListView.call(this, opts);
   this._initSettings(opts);
 };
+MarkerListView.prototype = Object.create(ListView.prototype);
+MarkerListView.prototype.constructor = MarkerListView;
 
 MarkerListView.prototype = $.extend({}, ListView.prototype, {
   _initSettings: function(opts) {
@@ -13,10 +17,24 @@ MarkerListView.prototype = $.extend({}, ListView.prototype, {
     this.markerEntryClick = opts.markerEntryClick;
   },
 
+  _initDOMElements: function(opts) {
+    ListView.prototype._initDOMElements.call(this, opts);
+
+    var header = this.entriesDomNode.find('.header');
+    header.empty();
+    header.html(
+      'Found <span class="amount"></span> results ' +
+      'for "<span class="query"></span>".'
+    ); // TODO: Externalize string.  Probably just use `this.header` reference at that point and substitute parts into string instead of dealing with HTML at this small level.
+
+    this.currentAmountDomNode = header.find('.amount');
+    this.currentSearchQueryDomNode = header.find('.query');
+  },
+
   showMarkers: function(query, markers) {
     this.clear();
 
-    this.currentSearchQueryDomNodes.text(query);
+    this.currentSearchQueryDomNode.text(query);
 
     this._addEntries(markers);
   },
@@ -25,14 +43,13 @@ MarkerListView.prototype = $.extend({}, ListView.prototype, {
     markers.forEach(function(marker) {
       this.addEntry(
         this._createEntry(
-          marker,
-          { onClick: this.markerEntryClick }
+          { marker: marker, onClick: this.markerEntryClick }
         ).domNode
       );
     }, this);
   },
 
-  _createEntry: function(marker, opts) {
-    return new MarkerListEntry(marker, opts);
+  _createEntry: function(opts) {
+    return new MarkerListEntry(opts);
   }
 });

@@ -26,9 +26,9 @@ ListView.prototype = {
         '</div>' +
         '<div class="entries">' +
           '<div class="header">' +
-            // '<span class="amount"></span> entries.' +
+            '<span class="amount"></span> entries.' +
           '</div>' +
-          '<ul class="entry-list">' +
+          '<ul class="list">' +
           '</ul>' +
         '</div>' +
       '</div>'
@@ -36,10 +36,10 @@ ListView.prototype = {
 
     this.noEntriesDomNode = this.domNode.find('.no-entries');
     this.entriesDomNode = this.domNode.find('.entries');
-    this.currentSearchAmountDomNode = this.entriesDomNode.find('.header .amount');
-    this.currentSearchQueryDomNodes = this.entriesDomNode.find('.header .query');
-    this.entryListDomNode = this.entriesDomNode.find('.entry-list');
+    this.currentAmountDomNode = this.entriesDomNode.find('.header .amount');
+    this.entryListDomNode = this.entriesDomNode.find('.list');
 
+    this.entryDomNodeTemplate = '<li class="entry"></div>';
     this.separatorDomNodeTemplate = '' +
       '<div class="leaflet-control-layers-separator">' +
       '</div>' +
@@ -50,15 +50,17 @@ ListView.prototype = {
     this.noEntriesDomNode.hide();
     this.entriesDomNode.show();
 
-    this.entriesDomNode.append($('<div class="entry">').append(contents));
-    this.entriesDomNode.append($(this.separatorDomNodeTemplate));
+    this.entryListDomNode.append($(this.entryDomNodeTemplate).append(contents));
+    this.entryListDomNode.append($(this.separatorDomNodeTemplate));
 
-    this.currentSearchAmountDomNode.text(this.entriesDomNode.children.length);
+    this.currentAmount++;
+    this.currentAmountDomNode.text(this.currentAmount);
   },
 
   clear: function() {
     this.noEntriesDomNode.show();
     this.entriesDomNode.hide();
     this.entryListDomNode.empty();
+    this.currentAmount = 0;
   }
 };

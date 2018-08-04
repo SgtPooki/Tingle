@@ -5,26 +5,29 @@
 //   - showScoreNearIcon: [Boolean]
 //   - showScoreInDetails: [Boolean]
 
-function SearchMarkerListEntry(searchEntry, opts) {
+function SearchMarkerListEntry(opts) {
   opts = opts || {};
-  this.searchEntry = searchEntry;
-  MarkerListEntry.call(this, searchEntry.item, opts);
+  this.searchEntry = opts.marker;
+  opts.marker = this.searchEntry.item;
+
+  this._initSettings(opts);
+
+  MarkerListEntry.call(this, opts);
 };
 
 SearchMarkerListEntry.prototype = Object.create(MarkerListEntry.prototype);
 SearchMarkerListEntry.prototype.constructor = SearchMarkerListEntry;
 
-SearchMarkerListEntry.prototype._initSettings = function(marker, opts) {
-  MarkerListEntry.prototype._initSettings.call(this, marker, opts);
+SearchMarkerListEntry.prototype._initSettings = function(opts) {
   this.showScoreNearIcon = getSetOrDefaultValue(opts.showScoreNearIcon, true);
   this.showScoreInDetails = getSetOrDefaultValue(opts.showScoreInDetails, true);
 };
 
-SearchMarkerListEntry.prototype._initDOMElements = function(marker) {
-  MarkerListEntry.prototype._initDOMElements.call(this, marker);
+SearchMarkerListEntry.prototype._initDOMElements = function(opts) {
+  MarkerListEntry.prototype._initDOMElements.call(this, opts);
 
   this.detailsNode = this.domNode.find('.details');
-  this.nameNode = this.detailsNode.find('.name');
+  this.titleNode = this.detailsNode.find('.title');
   this.descriptionNode = this.detailsNode.find('.description');
 
   this._addHighlighting();
@@ -43,8 +46,8 @@ SearchMarkerListEntry.prototype._addHighlighting = function() {
     groupFormatter: function(groupValues) { return groupValues[0]; }
   });
 
-  this.nameNode.html(generateHighlightedText(this.marker.name, fieldMatchGroups["name"]));
-  this.descriptionNode.html(generateHighlightedText(this.marker.description, fieldMatchGroups["description"]));
+  this.titleNode.html(generateHighlightedText(this.searchEntry.item.name, fieldMatchGroups["name"]));
+  this.descriptionNode.html(generateHighlightedText(this.searchEntry.item.description, fieldMatchGroups["description"]));
 };
 
 SearchMarkerListEntry.prototype._addSearchScoreDOMElements = function(score) {

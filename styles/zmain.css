@@ -335,7 +335,8 @@ body,
 }
 
 .list-view .no-results,
-.list-view .no-entries {
+.list-view .no-entries,
+.list-view .header {
 	text-align: center;
 	padding: 10px;
 	margin-left: 20px;
@@ -343,7 +344,7 @@ body,
 	color: #c3c3c3;
 }
 
-.marker-list {
+.list-view .entries .list {
 	margin: 0px;
 	padding: 0px;
 }
@@ -360,28 +361,31 @@ body,
 	font-size: 13px;
 }
 
-.marker-list-entry {
+.list-view .list .entry {
 	display: block;
 	height: 84px;
 	padding: 10px 10px;
 	white-space: nowrap;
+}
+
+.list-view .list .entry .clickable {
 	cursor: alias;
 }
 
-.marker-list-entry:hover {
+.list-view .list .entry .clickable:hover {
 	background-color: #dbdcba4a;
 }
 
-.marker-list-entry:active {
+.list-view .list .entry .clickable:active {
 	background-color: #ffffff73;
 }
 
-.marker-list-entry .icon {
+.list-view .entries .list .entry .icon {
 	display: inline-block;
 	vertical-align: top;
 }
 
-.marker-list-entry .details {
+.list-view .entries .list .entry .details {
 	display: inline-block;
 	height: 100%;
 	/* Maybe find a better way to do this without calc? Does it require the parent to have a fixed width? I was tying to avoid that randomly. Maybe try to propagate the larger drawer node's width, if it is not already present somewhow. */
@@ -391,17 +395,17 @@ body,
 	overflow-y: hidden;
 }
 
-.marker-list-entry .searchScore {
+.list-view .entries .list .entry .searchScore {
 	position: absolute;
 	bottom: 0px;
 	right: 0px;
 }
 
-.marker-list-entry .icon .searchScore {
+.list-view .entries .list .entry .icon .searchScore {
 	left: 0px;
 }
 
-.marker-list-entry .details .searchScore {
+.list-view .entries .list .entry .details .searchScore {
 	font-family: "BrandonText", sans-serif;
 	color: #c3c3c3;
 }
@@ -416,14 +420,14 @@ body,
 	background-color: #1fff1e;
 }
 
-.marker-list-entry .name {
+.list-view .entries .list .entry .name {
 	display: block;
 	height: 25%;
 	margin-bottom: 5px;
 	font-size: 14px;
 }
 
-.marker-list-entry .description {
+.list-view .entries .list .entry .description {
 	display: block;
 	height: 75%;
 	font-size: 12px;

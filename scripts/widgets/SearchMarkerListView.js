@@ -5,6 +5,6 @@ function SearchMarkerListView(opts) {
 SearchMarkerListView.prototype = Object.create(MarkerListView.prototype);
 SearchMarkerListView.prototype.constructor = SearchMarkerListView;
 
-SearchMarkerListView.prototype._createEntry = function(searchEntry, opts) {
-  return new SearchMarkerListEntry(searchEntry, opts);
+SearchMarkerListView.prototype._createEntry = function(opts) {
+  return new SearchMarkerListEntry(opts);
 };
