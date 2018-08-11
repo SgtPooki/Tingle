@@ -348,14 +348,23 @@ body,
 	height: 36px;
 }
 
-/*** History CONTENT ***/
+/*** History Content ***/
 
-.history .list-view .list .entry {
-  height: initial;
+.infobox.history.leaflet-control {
+  min-width: 200px;
 }
 
-.infobox.history .list-view .list {
-  /* padding-left: 5px; */
+.list-view .no-entries {
+  margin-left: 0px;
+}
+
+.history .list-view .entries .list {
+  max-height: 65vh;
+  overflow-y: scroll;
+}
+
+.history .list-view .entries .list .entry.test {
+  border: #DD222288 dotted 2px;
 }
 
 .history-icon {
@@ -368,6 +377,18 @@ body,
 	line-height: 36px;
 }
 
+.history .list-view .header {
+  padding: 3px;
+}
+
+.list-view .header {
+  text-align: center;
+}
+
+.history .list-view .list .entry {
+  padding: 3px 5px;
+}
+
 
 /*** SEARCH CONTENT ***/
 
@@ -376,10 +397,8 @@ body,
 	margin: 0px;
 }
 
-.list-view .no-results,
 .list-view .no-entries,
-.list-view .header {
-	text-align: center;
+.main-content .menu-cat-content-inner .list-view .header {
 	padding: 10px;
 	margin-left: 20px;
     font-family: "BrandonText", sans-serif;
@@ -391,7 +410,7 @@ body,
 	padding: 0px;
 }
 
-.list-view .results .header {
+.list-view .entries .header {
 	position: sticky;
 	top: 0px;
 	background-color: rgba(0, 0, 0, 0.8);
@@ -409,8 +428,11 @@ body,
 
 .list-view .list .entry {
 	display: block;
-	padding: 10px 10px;
 	white-space: nowrap;
+}
+
+.main-content .menu-cat-content-inner .list-view .list .entry {
+  padding: 10px;
 }
 
 .list-view .list .entry .clickable {
@@ -433,11 +455,14 @@ body,
 .list-view .entries .list .entry .details {
 	display: inline-block;
 	height: 100%;
-	/* Maybe find a better way to do this without calc? Does it require the parent to have a fixed width? I was tying to avoid that randomly. Maybe try to propagate the larger drawer node's width, if it is not already present somewhow. */
-	width: calc(100% - 74px);
 	margin-left: 10px;
 	white-space: normal;
 	overflow-y: hidden;
+}
+
+.main-content .menu-cat-content-inner .list-view .entries .list .entry .details {
+  /* Maybe find a better way to do this without calc? Does it require the parent to have a fixed width? I was tying to avoid that randomly. Maybe try to propagate the larger drawer node's width, if it is not already present somewhow. */
+  width: calc(100% - 74px);
 }
 
 .list-view .entries .list .entry .searchScore {
@@ -478,15 +503,6 @@ body,
 	font-size: 12px;
 }
 
-/*** History Content ***/
-
-.infobox.history.leaflet-control {
-  min-width: 250px;
-}
-
-.list-view .no-entries {
-  margin-left: 0px;
-}
 
 /*** MARKER CONTENT ***/
 

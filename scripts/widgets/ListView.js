@@ -39,19 +39,21 @@ ListView.prototype = {
     this.currentAmountDomNode = this.entriesDomNode.find('.header .amount');
     this.entryListDomNode = this.entriesDomNode.find('.list');
 
-    this.entryDomNodeTemplate = '<li class="entry"></div>';
+    this.entryDomNodeTemplate = '<li class="entry"></li>';
     this.separatorDomNodeTemplate = '' +
       '<div class="leaflet-control-layers-separator">' +
       '</div>' +
     '';
   },
 
-  addEntry: function (contents) {
+  addEntry: function (contents, addlClassNames) {
     this.noEntriesDomNode.hide();
     this.entriesDomNode.show();
 
-    this.entryListDomNode.append($(this.entryDomNodeTemplate).append(contents));
-    this.entryListDomNode.append($(this.separatorDomNodeTemplate));
+    if(this.currentAmount > 0) {
+      this.entryListDomNode.append($(this.separatorDomNodeTemplate));
+    }
+    this.entryListDomNode.append($(this.entryDomNodeTemplate).addClass(addlClassNames).append(contents));
 
     this.currentAmount++;
     this.currentAmountDomNode.text(this.currentAmount);

@@ -11,6 +11,7 @@
 //   - clear(): Clears the input field of text and of the clear 'x' overlay.
 // - Events:
 //   - searchExecuted: ("<query>")
+//   - cleared
 
 function MarkerSearchField(opts) {
   this._setDebugNames();
@@ -25,7 +26,7 @@ $.extend(MarkerSearchField.prototype, EventHandlersMixin.prototype);
 MarkerSearchField.prototype._className = "MarkerSearchField";
 
 MarkerSearchField.prototype._initialize = function() {
-  this.eventNames = ['searchExecuted'];
+  this.eventNames = ['searchExecuted', 'cleared'];
 },
 
 MarkerSearchField.prototype._initDOMElements = function() {
@@ -120,18 +121,20 @@ MarkerSearchField.prototype._addClearSearchListeners = function() {
     }
   }.bind(this));
 
-  this.clearSearchButton.on("click", this._clearSearchField.bind(this));
+  this.clearSearchButton.on("click", this.clear.bind(this));
 
   this.inputControl.on("input", this._updateClearSearchButtonVisibility.bind(this));
 };
 
 MarkerSearchField.prototype.clear = function() {
+  var oldQuery = this._getQuery();
   this._clearSearchField();
   this._clearIncrementalSearch();
+  this.triggerEventHandlers('cleared', oldQuery);
 };
 
 MarkerSearchField.prototype._clearSearchField = function() {
-  this._setQuery("");
+  this._setQuery();
   this._updateClearSearchButtonVisibility();
 };
 
@@ -202,7 +205,7 @@ MarkerSearchField.prototype._getQuery = function () {
   return this.searchInput.val();
 };
 
-MarkerSearchField.prototype._setQuery = function (text) {
+MarkerSearchField.prototype._setQuery = function (text="") {
   return this.searchInput.val(text);
 };
 

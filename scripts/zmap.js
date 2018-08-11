@@ -1,10 +1,19 @@
 // ZMap - Contains the wrapper for the main Leaflet map display, including its configuration, marker handling, and even the drawer forms (for now...).
 // - Events:
+//   - uiLoaded
 //   - markersAdded: ([<marker>...])
-//   - uiLoaded: ()
+//   - login: ({ result: [Boolean] })
+//   - logout: ({ result: [Boolean] })
+//   - register: ({ result: [Boolean] })
+//   - lostPassword: ({ result: [Boolean] })
+//   - changePassword: ({ result: [Boolean] })
 // - Config:
 //   - showInfoControls: [Boolean] Shows the Bounds and Center Location Info controls.
 //   - showHistoryControl: [Boolean] Shows the History Action List/Log Info control.
+
+// TODO:  I'm sure this class needs a lot of refactoring.
+//        At least take the UI parts out and make them their own objects,
+//        and keep the specific and additional Zelda/Game mapping points I guess.
 
 function ZMap() {
    var _this;
@@ -93,7 +102,11 @@ function ZMap() {
       GO_TO_MARKER_ERROR : "I AM ERROR. Marker %1 couldn't be found on this map.",
    }
 
-   this.eventNames = ["uiLoaded", "markersAdded"];
+   this.eventNames = [
+     "uiLoaded", "markersAdded", "login", "logout",
+     "register", "lostPassword", "changePassword",
+     "areaChanges"
+   ];
    this._initHandlers();
 };
 $.extend(ZMap.prototype, EventHandlersMixin.prototype);
@@ -1438,6 +1451,7 @@ ZMap.prototype.logout = function() {
          } else {
             toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
          }
+         this.triggerEventHandlers('logout', { result: data.success });
       }
    });
 };
@@ -1506,6 +1520,7 @@ ZMap.prototype._createRegisterForm = function() {
                console.log(data.msg);
                toastr.error(_this.langMsgs.REGISTER_ERROR.format(data.msg));
             }
+            this.triggerEventHandlers('register', { result: data.success });
         }
       });
 
@@ -1550,6 +1565,7 @@ ZMap.prototype._createLostPasswordForm = function() {
                console.log(data.msg);
                toastr.error(_this.langMsgs.LOST_PASSWORD_ERROR.format(data.msg));
             }
+            this.triggerEventHandlers('lostPassword', { result: data.success });
         }
       });
 
@@ -1602,6 +1618,7 @@ ZMap.prototype._createChangePasswordForm = function() {
                console.log(data.msg);
                toastr.error(_this.langMsgs.CHANGE_PASSWORD_ERROR.format(data.msg));
             }
+            this.triggerEventHandlers('changePassword', { result: data.success });
         }
       });
 
@@ -1664,6 +1681,7 @@ ZMap.prototype._createLoginForm = function() {
                console.log(data.msg);
                toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));
             }
+            this.triggerEventHandlers('login', { result: data.success });
         }
       });
       e.preventDefault();
