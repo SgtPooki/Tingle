@@ -36,7 +36,8 @@ ListView.prototype = {
 
     this.noEntriesDomNode = this.domNode.find('.no-entries');
     this.entriesDomNode = this.domNode.find('.entries');
-    this.currentAmountDomNode = this.entriesDomNode.find('.header .amount');
+    this.headerDomNode = this.entriesDomNode.find('.header');
+    this.currentAmountDomNode = this.headerDomNode.find('.amount');
     this.entryListDomNode = this.entriesDomNode.find('.list');
 
     this.entryDomNodeTemplate = '<li class="entry"></li>';

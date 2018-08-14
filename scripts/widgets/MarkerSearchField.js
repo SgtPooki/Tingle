@@ -34,7 +34,7 @@ MarkerSearchField.prototype._initDOMElements = function() {
     '<div class="form-group search-box">' +
       '<div class="icon-addon addon-sm">' +
         '<input type="text" placeholder="Search Breath of the Wild" class="form-control marker-search" id="marker-search">' + // TODO: Extract string for translation.
-        '<a class="button icon-close2" href="javascript:;">×</a>' +
+        '<a class="button icon-close2" href="javascript:;" title="Clear Results">×</a>' +
         '<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email">' +
         '</label>' +
       '</div>' +

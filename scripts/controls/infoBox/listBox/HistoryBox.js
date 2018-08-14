@@ -13,9 +13,24 @@ L.Control.InfoBox.ListBox.HistoryBox = L.Control.InfoBox.ListBox.extend({
 
   initialize: function() {
     L.Control.InfoBox.ListBox.prototype.initialize.call(this);
-    L.DomEvent.disableClickPropagation(this.listView.domNode[0]);
-    L.DomEvent.on(this.listView.domNode[0], 'mousewheel', L.DomEvent.stopPropagation);
+    L.DomEvent.disableClickPropagation(this._listView.domNode[0]);
+    L.DomEvent.on(this._listView.domNode[0], 'mousewheel', L.DomEvent.stopPropagation);
     this._addHistoryHandler();
+  },
+
+  onAdd: function() {
+    L.Control.InfoBox.ListBox.prototype.onAdd.call(this);
+    this.clearLink = $(
+      '<a class="button icon-close2" href="javascript:; title="Clear Entries">×</a>'
+    );
+    L.DomEvent.on(
+      this.clearLink[0],
+      'click',
+      this._listView.clear.bind(this._listView)
+    );
+    this._listView.headerDomNode.append(this.clearLink);
+
+    return this.domNode;
   },
 
   _addHistoryHandler: function() {
@@ -26,7 +41,7 @@ L.Control.InfoBox.ListBox.HistoryBox = L.Control.InfoBox.ListBox.extend({
   },
 
   addEntry: function (historyEvent) {
-    this.listView.addEntry(
+    this._listView.addEntry(
       new HistoryListEntry(historyEvent).domNode,
       ((historyEvent.test) ? "test" : "")
     );

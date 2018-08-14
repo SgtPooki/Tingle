@@ -10,13 +10,13 @@ L.Control.InfoBox.ListBox = L.Control.InfoBox.extend({
 
   initialize: function(opts) {
     L.Control.InfoBox.prototype.initialize.call(this);
-    this.listView = new ListView(this.options);
+    this._listView = new ListView(this.options);
   },
 
   onAdd: function() {
     L.Control.InfoBox.prototype.onAdd.call(this);
 
-    $(this.contentNode).append(this.listView.domNode);
+    $(this.contentNode).append(this._listView.domNode);
 
     return this.domNode;
   }

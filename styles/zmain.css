@@ -389,6 +389,10 @@ body,
   padding: 3px 5px;
 }
 
+.list-view .no-entries {
+  padding: 10px;
+}
+
 
 /*** SEARCH CONTENT ***/
 
@@ -397,9 +401,8 @@ body,
 	margin: 0px;
 }
 
-.list-view .no-entries,
+.main-content .menu-cat-content-inner .list-view .no-entries,
 .main-content .menu-cat-content-inner .list-view .header {
-	padding: 10px;
 	margin-left: 20px;
     font-family: "BrandonText", sans-serif;
 	color: #c3c3c3;
