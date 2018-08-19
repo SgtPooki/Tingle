@@ -21,8 +21,7 @@ zMap.addEventHandler('uiLoaded', function() {
 
   actionInfos.forEach(function(actionInfo) {
     actionStates.forEach(function(actionState) {
-      if(new RegExp("^true$", "i").test(
-        ZConfig.getConfig("history.plugins.map." + actionInfo.type + actionState))) {
+      if(ZConfig.getBooleanConfig("history.plugins.map." + actionInfo.type + actionState)) {
           var generateFn = function(event, test) {
             historyService.triggerEventHandlers('historyAction', {
               type: actionInfo.type,
@@ -36,8 +35,7 @@ zMap.addEventHandler('uiLoaded', function() {
 
           L.DomEvent.on(map, actionInfo.type + actionState, generateFn);
 
-          if(new RegExp("^true$", "i").test(
-            ZConfig.getConfig("history.testAllActions"))) {
+          if(ZConfig.getBooleanConfig("history.testAllActions")) {
             generateFn(null, true);
           }
       }

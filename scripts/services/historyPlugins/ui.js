@@ -33,8 +33,7 @@ zMap.addEventHandler('uiLoaded', function() {
 
   for(supportedUISubmissionEventName in supportedUISubmissionEvents) {
     var supportedUISubmissionEvent = supportedUISubmissionEvents[supportedUISubmissionEventName];
-    if(new RegExp("^true$", "i").test(
-      ZConfig.getConfig("history.plugins.ui." + supportedUISubmissionEventName))) {
+    if(ZConfig.getBooleanConfig("history.plugins.ui." + supportedUISubmissionEventName)) {
         var generateFn = function(data, test) {
           historyService.triggerEventHandlers('historyAction', {
             type: supportedUISubmissionEventName,
@@ -48,8 +47,7 @@ zMap.addEventHandler('uiLoaded', function() {
 
         zMap.addEventHandler(supportedUISubmissionEventName, generateFn);
 
-        if(new RegExp("^true$", "i").test(
-          ZConfig.getConfig("history.testAllActions"))) {
+        if(ZConfig.getBooleanConfig("history.testAllActions")) {
           generateFn({ result: true }, true);
           generateFn({ result: false }, true);
         }
@@ -57,8 +55,7 @@ zMap.addEventHandler('uiLoaded', function() {
   };
 
   (function() {
-    if(new RegExp("^true$", "i").test(
-      ZConfig.getConfig("history.plugins.ui.formChanges"))) {
+    if(ZConfig.getBooleanConfig("history.plugins.ui.formChanges")) {
         var generateFn = function(content, type, test) {
           historyService.triggerEventHandlers('historyAction', {
             type: 'form',
@@ -72,8 +69,7 @@ zMap.addEventHandler('uiLoaded', function() {
 
         mapControl.addHandler('afterSetContent', generateFn);
 
-        if(new RegExp("^true$", "i").test(
-          ZConfig.getConfig("history.testAllActions"))) {
+        if(ZConfig.getBooleanConfig("history.testAllActions")) {
           generateFn(null, "test", true);
         }
     }

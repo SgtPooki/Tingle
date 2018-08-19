@@ -634,7 +634,8 @@ ZMap.prototype.buildMap = function() {
 
    var mapControlOptions = $.extend(
      mapOptions, {
-     "zIndex": 0
+     zIndex: 0,
+     collapsed: ZConfig.getBooleanConfig("ZLayers.collapsed")
    });
 
    if (L.Browser.mobile && window.innerWidth < 768) {
@@ -652,16 +653,12 @@ ZMap.prototype.buildMap = function() {
         mapControlOptions
       );
       L.control.zoom({ position:'bottomright' }).addTo(map);
-      if(
-        new RegExp("^true$", "i")
-        .test(ZConfig.getConfig("showInfoControls"))
-      ) {
+      if(ZConfig.getBooleanConfig("showInfoControls")) {
         L.control.infoBox.location.center({ position: 'bottomleft' }).addTo(map);
         L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
       }
       if(
-        new RegExp("^true$", "i")
-        .test(ZConfig.getConfig("showHistoryControl"))
+        ZConfig.getBooleanConfig("showHistoryControl")
         && !L.Browser.mobile
       ) {
         historyBox = L.control.infoBox.listBox.historyBox({ position: 'topright' }).addTo(map);

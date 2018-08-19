@@ -5,8 +5,7 @@
 
 zMap.addEventHandler('uiLoaded', function() {
   (function() {
-    if(new RegExp("^true$", "i").test(
-      ZConfig.getConfig("history.plugins.search.query"))) {
+    if(ZConfig.getBooleanConfig("history.plugins.search.query")) {
         var generateFn = function(query, test) {
           historyService.triggerEventHandlers('historyAction', {
             type: 'searchQuery',
@@ -21,16 +20,14 @@ zMap.addEventHandler('uiLoaded', function() {
         mapControl.headerBar.searchArea.markerSearchField
           .addEventHandler('searchExecuted', generateFn);
 
-        if(new RegExp("^true$", "i").test(
-          ZConfig.getConfig("history.testAllActions"))) {
+        if(ZConfig.getBooleanConfig("history.testAllActions")) {
           generateFn("test", true);
         }
     }
   })();
 
   (function() {
-    if(new RegExp("^true$", "i").test(
-      ZConfig.getConfig("history.plugins.search.results"))) {
+    if(ZConfig.getBooleanConfig("history.plugins.search.results")) {
         var generateFn = function(results, test) {
           historyService.triggerEventHandlers('historyAction', {
             type: 'searchResults',
@@ -45,16 +42,14 @@ zMap.addEventHandler('uiLoaded', function() {
       mapControl.headerBar.searchArea.searchMarkerHandler
         .addEventHandler('resultsReceived', generateFn);
 
-      if(new RegExp("^true$", "i").test(
-        ZConfig.getConfig("history.testAllActions"))) {
+      if(ZConfig.getBooleanConfig("history.testAllActions")) {
         generateFn(["test"], true);
       }
     }
   })();
 
   (function() {
-    if(new RegExp("^true$", "i").test(
-      ZConfig.getConfig("history.plugins.search.fieldClear"))) {
+    if(ZConfig.getBooleanConfig("history.plugins.search.fieldClear")) {
         var generateFn = function(query, test) {
           historyService.triggerEventHandlers('historyAction', {
             type: 'fieldCleared',
@@ -69,8 +64,7 @@ zMap.addEventHandler('uiLoaded', function() {
         mapControl.headerBar.searchArea.markerSearchField
           .addEventHandler('cleared', generateFn);
 
-        if(new RegExp("^true$", "i").test(
-          ZConfig.getConfig("history.testAllActions"))) {
+        if(ZConfig.getBooleanConfig("history.testAllActions")) {
           generateFn("test", true);
         }
     }

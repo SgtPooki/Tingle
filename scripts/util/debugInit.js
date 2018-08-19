@@ -12,8 +12,7 @@
 
 // boolean
 // Also used by debugPrint, so 'exported' for now.
-var debugMode = new RegExp("^true$", "i")
-  .test(ZConfig.getConfig("debug.enabled"));
+var debugMode = ZConfig.getBooleanConfig("debug.enabled");
 
 (function() {
 
