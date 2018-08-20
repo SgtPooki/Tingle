@@ -3,9 +3,14 @@
 //   - noResultsMessage: [String] The message to display when there are no entries present.
 // - Methods
 //   - addEntry(<HTML>): Adds a new row containing the provided contents to the main lower content area.
+// - Events:
+//   - cleared: (<oldAmount>)
 
 function ListView(opts) {
   opts = opts || {};
+
+  this.eventNames = ['cleared'];
+  this._initHandlers();
 
   this._initSettings(opts);
   this._initDOMElements(opts);
@@ -32,7 +37,7 @@ ListView.prototype = {
           '</ul>' +
         '</div>' +
       '</div>'
-    );//maybe switch to no amount text and display total on bottom, possibly with pagination all in a status bar with clickable page arrows or just scroll..!
+    );//maybe switch to no amount text in the header and display total on bottom, possibly with pagination all more succint in a status bar with clickable page arrows or just scroll..!
 
     this.noEntriesDomNode = this.domNode.find('.no-entries');
     this.entriesDomNode = this.domNode.find('.entries');
@@ -64,6 +69,10 @@ ListView.prototype = {
     this.noEntriesDomNode.show();
     this.entriesDomNode.hide();
     this.entryListDomNode.empty();
+    var oldAmount = this.currentAmount;
     this.currentAmount = 0;
+    this.triggerEventHandlers('cleared', oldAmount);
   }
 };
+
+$.extend(ListView.prototype, EventHandlersMixin.prototype);
