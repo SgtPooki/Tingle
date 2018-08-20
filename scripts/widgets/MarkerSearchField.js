@@ -11,7 +11,7 @@
 //   - clear(): Clears the input field of text and of the clear 'x' overlay.
 // - Events:
 //   - searchExecuted: ("<query>")
-//   - cleared
+//   - cleared: ("<query>")
 
 function MarkerSearchField(opts) {
   this._setDebugNames();
@@ -30,20 +30,21 @@ MarkerSearchField.prototype._initialize = function() {
 },
 
 MarkerSearchField.prototype._initDOMElements = function() {
+  this.clearSearchButton = new XButton({ tooltip: "Clear Results" });
   this.domNode = $('' +
     '<div class="form-group search-box">' +
       '<div class="icon-addon addon-sm">' +
         '<input type="text" placeholder="Search Breath of the Wild" class="form-control marker-search" id="marker-search">' + // TODO: Extract string for translation.
-        '<a class="button icon-close2" href="javascript:;" title="Clear Results">×</a>' +
         '<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email">' +
         '</label>' +
       '</div>' +
     '</div>'
   );
 
-  this.searchInput = this.domNode.find('input.marker-search');
-  this.clearSearchButton = this.domNode.find('.button.icon-close2');
-  this.clearSearchButton.hide();
+  this.searchContainer = this.domNode.find('.icon-addon');
+  this.searchInput = this.searchContainer.find('input.marker-search');
+  this.clearSearchButton.domNode.hide();
+  this.searchContainer.append(this.clearSearchButton.domNode);
 
   if(this.incrementalSearch && this.showProgressBar) {
     this.progressBar = new ProgressBar();
@@ -116,12 +117,14 @@ MarkerSearchField.prototype._addClearSearchListeners = function() {
   // keypress didn't work =/
   this.inputControl.on("keydown", function(e) {
     if(e.key == "Escape") {
-      if (this.clearSearchFieldFirst && this._getQuery()) e.stopPropagation();
-      this.clear();
+      if (this._getQuery()) {
+        if(this.clearSearchFieldFirst) e.stopPropagation();
+        this.clear();
+      }
     }
   }.bind(this));
 
-  this.clearSearchButton.on("click", this.clear.bind(this));
+  this.clearSearchButton.domNode.on("click", this.clear.bind(this));
 
   this.inputControl.on("input", this._updateClearSearchButtonVisibility.bind(this));
 };
@@ -140,8 +143,8 @@ MarkerSearchField.prototype._clearSearchField = function() {
 
 
 MarkerSearchField.prototype._updateClearSearchButtonVisibility = function() {
-  if(!!this._getQuery() != this.clearSearchButton.is(":visible")) {
-    this.clearSearchButton.toggle();
+  if(!!this._getQuery() != this.clearSearchButton.domNode.is(":visible")) {
+    this.clearSearchButton.domNode.toggle();
   }
 };
 

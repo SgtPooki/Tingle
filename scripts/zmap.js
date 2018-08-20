@@ -638,6 +638,8 @@ ZMap.prototype.buildMap = function() {
      collapsed: ZConfig.getBooleanConfig("ZLayers.collapsed")
    });
 
+   _buildContextMenu();
+
    if (L.Browser.mobile && window.innerWidth < 768) {
       mapControl = L.control.zlayersbottom(
         baseMaps,
@@ -711,7 +713,6 @@ ZMap.prototype.buildMap = function() {
       }
    });
 
-   _this._buildContextMenu();
 
    if (!mapControl.isMobile()) {
       var mobileAds = document.getElementById("mobileAds");
@@ -720,11 +721,12 @@ ZMap.prototype.buildMap = function() {
       var desktopAds = document.getElementById("desktopAds");
       if(desktopAds) desktopAds.style.display = 'none';
    }
+   this.triggerEventHandlers('uiLoaded');
 };
 
 ZMap.prototype.setUser = function(vUser) {
    user = vUser;
-   _this._buildContextMenu();
+   _buildContextMenu();
 
    if (user != null) {
       // Transfer cookies completed markers to database
@@ -1360,78 +1362,6 @@ ZMap.prototype.undoMarkerComplete = function() {
 //*************                           BEGIN - CONTEXT MENU                           *************//
 //*************                                                                          *************//
 //****************************************************************************************************//
-ZMap.prototype._buildContextMenu = function() {
-
-   // Check if map and/or context was built
-   if (map == null || map.contextmenu == null) {
-      return;
-   }
-
-   function addMarker(e) {
-
-      map.closePopup(); // Safe coding
-
-      if (newMarker != null) {
-         map.removeLayer(newMarker);
-      }
-      newMarker = new L.marker(e.latlng).addTo(map);
-      map.contextmenu.hide();
-      map.panTo(e.latlng);
-      _this._createMarkerForm(null, e.latlng);
-   }
-
-   function login() {
-      _this._createLoginForm();
-   }
-
-   // Create context options
-   var contextMenu;
-
-   if (user == null) {
-      contextMenu = [{
-         text: 'Login',
-         hideOnSelect: true,
-         callback: login
-      }];
-   } else {
-      contextMenu = [{
-         text: 'Add Marker',
-         hideOnSelect: true,
-         callback: addMarker
-      }];
-   }
-
-   contextMenu.push({
-         text: 'Center map here',
-         callback: function(e) { map.panTo(e.latlng); }
-      }, '-', {
-         text: 'Zoom in',
-         //icon: 'images/zoom-in.png',
-         callback: function() {map.zoomIn()}
-      }, {
-         text: 'Zoom out',
-         //icon: 'images/zoom-out.png',
-         callback: function() {map.zoomOut()}
-      });
-
-   if (user != null) {
-      contextMenu.push('-', {
-         text: 'Change Password',
-         callback: function() {
-            zMap._createChangePasswordForm();
-         }
-      }, {
-         text: 'Log Out',
-         callback: this.logout.bind(this)
-      });
-   }
-
-   // Rebuild Context Menu by removing all items and adding them back together
-   map.contextmenu.removeAllItems();
-   for (var i = 0; i < contextMenu.length; i++) {
-      map.contextmenu.addItem(contextMenu[i]);
-   }
-}
 
 ZMap.prototype.logout = function() {
    $.ajax({
@@ -1442,7 +1372,7 @@ ZMap.prototype.logout = function() {
          if (data.success) {
             toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
             user = null;
-            _this._buildContextMenu();
+            _buildContextMenu();
             mapControl.resetContent();
             showLoginControls();
          } else {

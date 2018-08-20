@@ -32,6 +32,8 @@ L.Control.ZControl = L.Control.extend({
       'span',
       this.options.className
     );
+
+    return this.domNode;
   }
 });
 $.extend(L.Control.ZControl.prototype, DebugMixin.prototype);

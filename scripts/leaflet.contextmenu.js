@@ -318,16 +318,53 @@ L.Map.ContextMenu = L.Handler.extend({
 			});
 		};
 	},
+	addHooks: function () {
+    var container = this._map.getContainer();
 
 	_insertElementAt: function (tagName, className, container, index) {
 		var refEl,
 		    el = document.createElement(tagName);
+		$(container).on('mouseleave', this._hide.bind(this))
+		$(document).on('keydown', this._onKeyDown.bind(this));
 
 		el.className = className;
+    if(L.Browser.touch) {
+      L.DomEvent.on(document, this._touchstart, this._hide, this);
+    }
 
 		if (index !== undefined) {
 			refEl = container.children[index];
+		this._map.on({
+			contextmenu: this._show,
+			mousedown: this._hide,
+			movestart: this._hide,
+			zoomstart: this._hide
+		}, this);
+	},
+	removeHooks: function () {
+    var container = this._map.getContainer();
+
+		$(container).off('mouseleave', this._hide);
+		$(document).off('keydown', this._onKeyDown);
+
+    if (L.Browser.touch) {
+      L.DomEvent.off(document, this._touchstart, this._hide, this);
+    }
+
+		this._map.off({
+			contextmenu: this._show,
+			mousedown: this._hide,
+			movestart: this._hide,
+			zoomstart: this._hide
+		}, this);
+	},
+	_onKeyDown: function (e) {
+		if (e.key == "Escape" && this.isVisible()) {
+			this._hide();
+			L.DomEvent.stopPropagation(e);
+			e.stopImmediatePropagation();
 		}
+	},
 
 		if (refEl) {
 			container.insertBefore(el, refEl);
@@ -380,6 +417,9 @@ L.Map.ContextMenu = L.Handler.extend({
 		}
 	},
 
+	isVisible: function () {
+		return this._visible;
+	},
 	_setPosition: function (pt) {
 		var mapSize = this._map.getSize(),
 		    container = this._container,
@@ -434,11 +474,9 @@ L.Map.ContextMenu = L.Handler.extend({
 	},
 
 	_onKeyDown: function (e) {
-		var key = e.keyCode;
-
-		// If ESC pressed and context menu is visible hide it 
-		if (key === 27) {
+		if (e.key == "Escape" && this._visible) {
 			this._hide();
+			L.DomEvent.stopPropagation(e);
 		}
 	},
 
@@ -449,6 +487,9 @@ L.Map.ContextMenu = L.Handler.extend({
 	_onItemMouseOut: function (e) {
 		L.DomUtil.removeClass(e.target || e.srcElement, 'over');
 	}
+  isCapturingInput() {
+    return this.isVisible();
+  }
 });
 
 L.Map.addInitHook('addHandler', 'contextmenu', L.Map.ContextMenu);
@@ -492,7 +533,7 @@ L.Mixin.ContextMenu = {
 
 	_initContextMenu: function () {
 		this._items = [];
-	
+
 		this.on('contextmenu', this._showContextMenu, this);
 	},
 
@@ -563,3 +604,78 @@ for (i = 0, l = classes.length; i < l; i++) {
 }
 	return L.Map.ContextMenu;
 	});
+
+function _buildContextMenu() {
+
+   // Check if map and/or context was built
+   if (map == null || map.contextmenu == null) {
+      return;
+   }
+
+   function addMarker(e) {
+
+      map.closePopup(); // Safe coding
+
+      if (newMarker != null) {
+         map.removeLayer(newMarker);
+      }
+      newMarker = new L.marker(e.latlng).addTo(map);
+      map.contextmenu.hide();
+      map.panTo(e.latlng);
+      zMap._createMarkerForm(null, e.latlng);
+   }
+
+   function login() {
+      zMap._createLoginForm();
+   }
+
+   // Create context options
+   var contextMenu;
+
+   if (user == null) {
+      contextMenu = [{
+         text: 'Login',
+         hideOnSelect: true,
+         callback: login
+      }];
+   } else {
+      contextMenu = [{
+         text: 'Add Marker',
+         hideOnSelect: true,
+         callback: addMarker
+      }];
+   }
+
+   contextMenu.push({
+         text: 'Center map here',
+         callback: function(e) { map.panTo(e.latlng); }
+      }, '-', {
+         text: 'Zoom in',
+         //icon: 'images/zoom-in.png',
+         callback: function() {map.zoomIn()}
+      }, {
+         text: 'Zoom out',
+         //icon: 'images/zoom-out.png',
+         callback: function() {map.zoomOut()}
+      });
+
+   if (user != null) {
+      contextMenu.push('-', {
+         text: 'Change Password',
+         callback: function() {
+            zMap._createChangePasswordForm();
+         }
+      }, {
+         text: 'Log Out',
+         callback: this.logout.bind(this)
+      });
+   }
+
+   // Rebuild Context Menu by removing all items and adding them back together
+   map.contextmenu.removeAllItems();
+   for (var i = 0; i < contextMenu.length; i++) {
+      map.contextmenu.addItem(contextMenu[i]);
+   }
+};
+
+zMap.addEventHandler('uiLoaded', _buildContextMenu);

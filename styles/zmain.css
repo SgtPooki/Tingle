@@ -350,6 +350,28 @@ body,
 
 /*** History Content ***/
 
+.history.leaflet-control > .history.other-side > .expand {
+  display: block;
+
+  line-height: 1.75;
+
+  width: 44px;
+  height: 44px;
+
+  font-size: 24px;
+}
+
+.history.infobox .header .shrink {
+  float: right;
+  line-height: 28px;
+  height: 100%;
+}
+
+.header.vertical-divider .shrink {
+  width: 15%;
+  border-left: 1px solid rgba(255, 255, 255, .2);
+}
+
 .infobox.history.leaflet-control {
   min-width: 200px;
 }
@@ -686,6 +708,10 @@ a.icon-close2 {
 	clear: none;
 }
 
+.infobox .header .title {
+  display: inline-block;
+}
+
 .infobox .column {
 	float: left;
 }
@@ -703,7 +729,7 @@ a.icon-close2 {
 	text-align: center;
 }
 
-.infobox .row {
+.infobox .row .title {
 	margin: 5px 10px;
 }
 
@@ -1017,15 +1043,24 @@ a.icon-close2 {
 	text-align: center;
 	height: 40px;
 	padding: 0 0 0 5px;
-	width: 85%;
 	background-clip: padding-box;
 	-webkit-background-clip: padding-box;
+}
+
+.row.vertical-divider>div[class^="col-"]:nth-child(2) {
+  width: 70%;
 }
 
 .row.vertical-divider div[class^="col-"]:first-child {
 	border-left: none;
 	width: 15%;
 	border-right: 1px solid rgba(255, 255, 255, .2);
+}
+
+.row.vertical-divider div[class^="col-"]:last-child {
+  border-right: none;
+	width: 15%;
+	border-left: 1px solid rgba(255, 255, 255, .2);
 }
 
 /* Drawer Header Stuff */
@@ -1056,7 +1091,9 @@ a.icon-close2 {
 	color: rgba(255,255,255,.5);
 }
 
-.leaflet-control-layers-list .row {
+/* Bootstrap fix */
+.leaflet-control-layers-list .row,
+.infobox .row {
 	margin-left: 0px;
 	margin-right: 0px;
 }

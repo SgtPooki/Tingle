@@ -13,7 +13,7 @@ function ListEntry(opts) {
 ListEntry.prototype = {
   _initDOMElements: function(opts) {
     this.domNode = $('' +
-      '<div class="entry">' +
+      '<div class="marker-entry">' +
         '<span class="icon">' +
         '</span>' +
         '<span class="details">' +

@@ -10,8 +10,8 @@ L.Control.InfoBox = L.Control.ZControl.extend({
     $(this.domNode).addClass("infobox");
 
     if(this.options.title) {
-      var header = L.DomUtil.create('div', 'row header', this.domNode);
-      header.append(this.options.title);
+      this.headerDomNode = L.DomUtil.create('div', 'row header vertical-divider', this.domNode);
+      $(this.headerDomNode).append($('<p class="title">' + this.options.title + '</p>'));
     }
 
     L.DomUtil.create('div', 'infobox-separator', this.domNode);

@@ -24,7 +24,13 @@ HeaderBar.prototype._initSettings = function(opts) {
   this.accountButton = getSetOrDefaultValue(opts.accountButton, !zMap.getUser());
   this.largerSearchArea = getSetOrDefaultValue(opts.largerSearchArea, !this.accountButton);
 
-  this.shrinkButton = opts.shrinkButton;
+  this.shrinkButton = getSetOrDefaultValues(
+    [
+      opts.shrinkButton,
+      ZConfig.getBooleanConfig('ZLayers.shrinkButton')
+    ],
+    false // Hiding the shrink button for now due to UX conflict ~ Jason, May 22nd 2018
+  );
 
   this.mapControl = opts.mapControl;
 };
@@ -52,12 +58,10 @@ HeaderBar.prototype._initDOMElements = function() {
   );
   this.createSearchArea(headerDivMid);
 
-  // Hiding the shrink button for now due to UX conflict ~ Jason, May 22nd 2018
-  //
-  // if(this.shrinkButton) {
-  //  var headerDivRight = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
-  //  this.createShrinkButton(headerDivRight);
-  // }
+  if(this.shrinkButton) {
+   var headerDivRight = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
+   this.createShrinkButton(headerDivRight);
+  }
 };
 
 HeaderBar.prototype.createActionsButton = function(parent) {
@@ -90,17 +94,19 @@ HeaderBar.prototype.createSearchArea = function(parent) {
 };
 
 HeaderBar.prototype.createShrinkButton = function(parent) {
-  var shrinkButton = L.DomUtil.create('a', 'button icon-shrink full-icon-space', parent);
-  shrinkButton.innerHTML = '';
-  shrinkButton.href = "#close";
+  var shrinkButton = new ShrinkButton({
+    addlClasses: "full-icon-space"
+  });
   L.DomEvent
-    .on(shrinkButton, 'click', L.DomEvent.stopPropagation)
-    .on(shrinkButton, 'click', function(e) {
+    .on(shrinkButton.domNode[0], 'click', L.DomEvent.stopPropagation)
+    .on(shrinkButton.domNode[0], 'click', function(e) {
       // Open
       this._collapse();
       _this._closeNewMarker();
       e.preventDefault();
-    }, mapControl);
+    }, mapControl)
+  ;
+  $(parent).append(shrinkButton.domNode);
 };
 
 HeaderBar.prototype.focus = function() {

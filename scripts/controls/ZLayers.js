@@ -41,16 +41,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.options.width = 360;
     this.options.scrollbarWidth = 18; // IE / FF
 
-    $(document).on('keydown', function(e) {
-      if(e.key == "Escape") {
-        if(this._contentType != this.options.defaultContentType) {
-          this.resetContent();
-        } else {
-          this.toggle();
-        }
-      }
-    }.bind(this));
-
     this._initContainer();
   },
 
@@ -81,6 +71,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         if(handler) this.addHandler(handlerClientName, handler);
       }, this);
     }
+    this._addCollapseHandler();
   },
 
   _initContainer: function(t) {
@@ -136,8 +127,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
       this.headerBar = new HeaderBar({
         parent: form1,
-        mapControl: this,
-        shrinkButton: true
+        mapControl: this
       });
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
@@ -193,6 +183,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
    setDefaultFocus: function() {
      this.headerBar.focus();
    },
+  _addCollapseHandler: function() {
+    $(document).on('keydown', function(e) {
+      if(e.key == "Escape") {
+        this._resetOrToggle(e);
+      }
+    }.bind(this));
+  },
 
   addHandler: function(eventName, handleFunction) {
     if(handleFunction)
@@ -263,6 +260,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
     $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
   },
 
+  toggleContent: function(targetContentType, setContentFunction) {
+     if(this._contentType == targetContentType) {
+       this.resetContent();
+     } else {
+       setContentFunction();
+     }
+   },
   // Sets it to the default category selector scene,
   // or whatever is set as the intended default scene.
   resetContent: function() {
@@ -283,6 +287,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
   _update: function () {},
 
   _addItem: function (obj, vInputClick) {},
+  _resetOrToggle: function(e) {
+    if(!this.isShowingDefaultContent()) {
+      L.DomEvent.stopPropagation(e);
+      e.stopImmediatePropagation()
+      this.resetContent();
+    } else {
+      this.toggle();
+    }
+  },
+  isShowingDefaultContent() {
+    return this._contentType == this.options.defaultContentType;
+  },
 
   isCollapsed: function () {
     return this.options.collapsed;
@@ -373,6 +389,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     } else {
       setContentFunction();
     }
+  isCapturingInput() {
+    return !this.isShowingDefaultContent();
   }
 });
 $.extend(L.Control.ZLayers.prototype, DebugMixin.prototype);
