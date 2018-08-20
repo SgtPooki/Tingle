@@ -42,42 +42,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.options.scrollbarWidth = 18; // IE / FF
 
     this._initContainer();
-  },
-
-  _initHandlers: function() {
-    if(!this.handlers)
-      this.handlers = {};
-
-    Array.flatten(this.options.handlerRootNames.map(function(handlerRootName) {
-      return ['before', 'after'].map(function(handlerPrefix) {
-        return "" +
-          handlerPrefix +
-          handlerRootName[0].toUpperCase() +
-          handlerRootName.substr(1)
-        ;
-      });
-    })).forEach(function(handlerName) {
-      if(!this.handlers[handlerName])
-        this.handlers[handlerName] = [];
-    }, this);
-  },
-
-  _attachHandlers: function() {
-    for(handlerClientName in this.handlers) {
-      [
-        this[handlerClientName],
-        this.options[handlerClientName]
-      ].forEach(function(handler) {
-        if(handler) this.addHandler(handlerClientName, handler);
-      }, this);
-    }
     this._addCollapseHandler();
   },
 
   _initContainer: function(t) {
     this._container = L.DomUtil.create('div', this.options.className);
   },
-
 	_initLayout: function () {
     var container = this._container;
 
@@ -164,7 +134,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		container.appendChild(form1);
     container.appendChild(this._contents);
    },
-
   createCategoryMenu: function() {
     return new CategoryMenu({
      categoryTree: categoryTree,
@@ -180,9 +149,39 @@ L.Control.ZLayers = L.Control.Layers.extend({
    });
   },
 
-   setDefaultFocus: function() {
-     this.headerBar.focus();
-   },
+  onRemove: function (map) {},
+  _updateLayerControl: function(obj) {},
+  _update: function () {},
+  _addItem: function (obj, vInputClick) {},
+
+  _initHandlers: function() {
+    if(!this.handlers)
+      this.handlers = {};
+
+    Array.flatten(this.options.handlerRootNames.map(function(handlerRootName) {
+      return ['before', 'after'].map(function(handlerPrefix) {
+        return "" +
+          handlerPrefix +
+          handlerRootName[0].toUpperCase() +
+          handlerRootName.substr(1)
+        ;
+      });
+    })).forEach(function(handlerName) {
+      if(!this.handlers[handlerName])
+        this.handlers[handlerName] = [];
+    }, this);
+  },
+  _attachHandlers: function() {
+    for(handlerClientName in this.handlers) {
+      [
+        this[handlerClientName],
+        this.options[handlerClientName]
+      ].forEach(function(handler) {
+        if(handler) this.addHandler(handlerClientName, handler);
+      }, this);
+    }
+  },
+
   _addCollapseHandler: function() {
     $(document).on('keydown', function(e) {
       if(e.key == "Escape") {
@@ -195,7 +194,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
     if(handleFunction)
       this.handlers[eventName].push(handleFunction.bind(this));
   },
-
   _triggerHandler: function(handleName) {
     var handlerArgs = Array.prototype.slice.call(arguments, 1);
     this.handlers[handleName].forEach(function(handler) {
@@ -208,7 +206,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._setContent(vContent, vType);
     this._triggerHandler("afterSetContent", vContent, vType);
   },
-
   // To be used directly by internal functions and avoid
   // unecessary handlers being triggered, as otherwise
   // it may be seen as an action setting content worth
@@ -242,7 +239,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._contentType = vType;
     $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
   },
-
   _resetContent: function(runNestedHooks = true) {
     //@TODO: New Marker should be from the map!
     if (newMarker != null) {
@@ -259,7 +255,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
     );
     $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
   },
-
   toggleContent: function(targetContentType, setContentFunction) {
      if(this._contentType == targetContentType) {
        this.resetContent();
@@ -274,19 +269,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._resetContent();
     this._triggerHandler("afterResetContent");
   },
-
-  onRemove: function (map) {},
-
-  _removeLayers: $.noop,
-
-
-  _addLayer: function (layer, name, overlay, instanceLayer) {},
-
-  _updateLayerControl: function(obj) {},
-
-  _update: function () {},
-
-  _addItem: function (obj, vInputClick) {},
   _resetOrToggle: function(e) {
     if(!this.isShowingDefaultContent()) {
       L.DomEvent.stopPropagation(e);
@@ -296,6 +278,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.toggle();
     }
   },
+  getContentType() {
+    return this._contentType;
+  },
   isShowingDefaultContent() {
     return this._contentType == this.options.defaultContentType;
   },
@@ -303,14 +288,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
   isCollapsed: function () {
     return this.options.collapsed;
   },
-
-   _collapse: function() {
-      this.resetContent();
-      this.options.collapsed = true;
-      return this.collapse();
-   },
-
-   _expand: function() {
+  _collapse: function() {
+    this.resetContent();
+    this.options.collapsed = true;
+    return this.collapse();
+  },
+  _expand: function() {
      this._triggerHandler("before_expand");
       if (this._contents != undefined) {
          this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
@@ -320,31 +303,26 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.expand();
     this._triggerHandler("after_expand");
    },
-
   after_expand: function() {
     this.setDefaultFocus();
   },
-
   toggle: function() {
     (this.isCollapsed()) ? this._expand() : this._collapse();
   },
 
-  getContentType() {
-    return this._contentType;
+  _removeLayers: $.noop,
+  _addLayer: function (layer, name, overlay, instanceLayer) {},
+  _checkDisabledLayers: function () {
+
   },
 
-   _checkDisabledLayers: function () {
-
-   },
-
-
-   getCurrentMap: function() {
-      return {mapId: this.currentMap, subMapId: this.currentSubMap}
-   },
-   setCurrentMap: function(vMap, vSubMap) {
-      this.currentMap = vMap;
-      this.currentSubMap = vSubMap;
-   },
+  getCurrentMap: function() {
+    return {mapId: this.currentMap, subMapId: this.currentSubMap}
+  },
+  setCurrentMap: function(vMap, vSubMap) {
+    this.currentMap = vMap;
+    this.currentSubMap = vSubMap;
+  },
 	// Needs improvements
 	changeMap: function(mapId, subMapId) {
 		inputs = this._form.getElementsByTagName('input'),
@@ -379,16 +357,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
 	},
 
-   isMobile: function() {
-      return false;
-   },
+  setDefaultFocus: function() {
+     this.headerBar.focus();
+  },
 
-  toggleContent: function(targetContentType, setContentFunction) {
-    if(this._contentType == targetContentType) {
-      this.resetContent();
-    } else {
-      setContentFunction();
-    }
   isCapturingInput() {
     return !this.isShowingDefaultContent();
   }
@@ -396,7 +368,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 $.extend(L.Control.ZLayers.prototype, DebugMixin.prototype);
 
 
-L.Control.ZLayers.addInitHook(function(){
+L.Control.ZLayers.addInitHook(function() {
   this._area = this.options.width * this.options.length;
 });
 

@@ -13,7 +13,7 @@ function ChangelogHandler(opts) {
 
 ChangelogHandler.prototype._initSettings = function() {
   this.notificationWidth = (
-    (mapControl.isMobile())
+    (L.Browser.mobile)
     ? (window.innerWidth-24)
     : "450"
   ) + "px";

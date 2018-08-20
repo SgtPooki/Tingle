@@ -856,7 +856,7 @@ ZMap.prototype.deleteMarker = function(vMarkerId) {
                         markers[i].visible = 0;
                         markers[i].categoryId = -1;
                         toastr.success(_this.langMsgs.MARKER_DEL_SUCCESS.format(markers[i].id));
-                        if (mapControl.isMobile()) {
+                        if (L.Browser.mobile) {
                            mapControl.closeDrawer();
                         } else {
                            mapControl.resetContent();

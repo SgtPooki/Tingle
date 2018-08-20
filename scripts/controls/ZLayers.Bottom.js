@@ -226,10 +226,6 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
     // console.log("DEBUG: this._open changed to: " + this._open);
   },
 
-   isMobile: function() {
-      return true;
-   },
-
   drawerTop: function() {
     return parseInt(this._container.style.top.replace('px',''));
   },
