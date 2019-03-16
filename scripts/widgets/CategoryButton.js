@@ -78,6 +78,6 @@ CategoryButton.prototype._updateState = function() {
 CategoryButton.prototype.toggle = function(toggledOn) {
   this.toggledOn = getSetOrDefaultValue(toggledOn, !this.toggledOn);
   this._updateState();
-  this.onToggle(this.toggledOn, this.category);
+  this.onToggle(this.category, this.toggledOn);
   // this.domNode.trigger('toggle', this.category); // Alternative?
 };

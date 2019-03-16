@@ -133,16 +133,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
    },
   createCategoryMenu: function() {
     return new CategoryMenu({
-     categoryTree: categoryTree,
-     onCategoryToggle: function(toggledOn, category) {
-       (
-         (this.options.categorySelectionMethod == "focus")
-         ? zMap.updateCategoryVisibility
-         : zMap.updateCategoryVisibility2
-       ).call(zMap, category, toggledOn)
-     }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
-     categorySelectionMethod: this.options.categorySelectionMethod,
-     defaultToggledState: (this.options.categorySelectionMethod == "focus")
+     categoryTree: categoryTree
    });
   },
 

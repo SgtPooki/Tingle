@@ -20,6 +20,10 @@ var debugMode = ZConfig.getBooleanConfig("debug.enabled");
   var objectsToTrace = eval(ZConfig.getConfig("debug.objectsToTrace")) || [];
 
   // {"<objectPath>": ["methodName", ...]}
+  var targetPropertyNames = ZConfig.getConfig("debug.targetPropertyNames");
+  if (targetPropertyNames) targetPropertyNames = JSON.parse(targetPropertyNames);
+
+  // {"<objectPath>": ["methodName", ...]}
   var methodsToIgnore = JSON.parse(ZConfig.getConfig("debug.methodsToIgnore") || "{}");
 
   // {...}
@@ -27,6 +31,7 @@ var debugMode = ZConfig.getBooleanConfig("debug.enabled");
     abbvFn: true,
     argNewLines: false,
     stringMax: 20,
+    targetPropertyNames: targetPropertyNames,
     ignore: methodsToIgnore
   }, JSON.parse(ZConfig.getConfig("debug.options") || "{}"));
 

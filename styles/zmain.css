@@ -372,8 +372,9 @@ body,
   border-left: 1px solid rgba(255, 255, 255, .2);
 }
 
-.infobox.history.leaflet-control {
+.history.leaflet-control {
   min-width: 200px;
+  max-width: 300px;
 }
 
 .list-view .no-entries {

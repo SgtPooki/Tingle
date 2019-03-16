@@ -54,12 +54,26 @@ function inject(object, extraFn, options = {}) {
     object.name
   );
 
-  for (let propName of Object.getOwnPropertyNames(objectPrototype)) {
+  var targetPropertyNames = (
+    (
+      options.targetPropertyNames &&
+      options.targetPropertyNames[objectName]
+    )
+    || Object.getOwnPropertyNames(objectPrototype)
+  );
+
+  for (let propName of targetPropertyNames) {
     let prop = objectPrototype[propName];
     if(typeof prop === "function" && (
-      !options.ignore ||
-      !options.ignore[objectName] ||
-      !options.ignore[objectName].includes(propName)
+      !(
+        options.ignore &&
+        options.ignore[objectName] &&
+        options.ignore[objectName].includes(propName)
+      ) &&
+      !(
+        options.ignore["_all"] &&
+        options.ignore["_all"].includes(propName)
+      )
     )) {
       objectPrototype[propName] = generateReplacementFunction(extraFn, objectName, propName, prop, options);
     }

@@ -21,7 +21,7 @@ function ZMap() {
   // Now that we have the changelog system using the database
   // with a field for each number, let's use 3 numbers and no
   // letters in the version.
-  this.version = '0.6.2';
+  this.version = '0.6.3';
 
    this.mapOptions = {
         startArea : "-168,102,-148,122"
@@ -105,7 +105,7 @@ function ZMap() {
    this.eventNames = [
      "uiLoaded", "markersAdded", "login", "logout",
      "register", "lostPassword", "changePassword",
-     "areaChanges", "categoriesChanged"
+     "areaChanges"
    ];
    this._initHandlers();
 };
@@ -183,7 +183,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
    maps = [];
    markers = [];
    categoryTree = [];
-   categories = [];
+   categories = {};
    completedMarkers = [];
    user = null;
    newMarker = null;
@@ -230,9 +230,6 @@ ZMap.prototype.constructor = function(vMapOptions) {
    } else {
       currentIcon = 'Small';
    }
-
-   zMap.addEventHandler("categoriesChanged", this.checkActiveCategoryAmount.bind(this));
-   zMap.addEventHandler("categoriesChanged", this.refreshMap.bind(this));
 };
 
 // Add a map category
@@ -721,6 +718,10 @@ ZMap.prototype.buildMap = function() {
       }
    });
 
+   mapControl._categoryMenu.addEventHandler(
+     "categoriesChanged",
+     this.refreshMap.bind(this)
+   );
 
    if (!mapControl.isMobile()) {
       var mobileAds = document.getElementById("mobileAds");
@@ -759,69 +760,6 @@ ZMap.prototype.toggleCompleted = function(showCompleted) {
   zMap.refreshMapCompleted();
 };
 
-ZMap.prototype.checkWarnUserSeveralEnabledCategories = function() {
-  if(!userWarnedAboutMarkerQty) {
-    if(categories.reduce(
-      function(sum, category) {
-        return sum + ((category.userChecked) ? 1 : 0);
-      }, 0) > 5
-    ) {
-      toastr.warning('Combining a lot of categories might impact performance.');
-      userWarnedAboutMarkerQty = true;
-    }
-  }
-};
-
-ZMap.prototype.updateCategoryVisibility = function(category, vChecked) {
-  vCatId = category.id;
-   // Change the category visibility of the category parameter
-   var previousUserCheck;
-
-   categories.forEach(function(category, index, array) {
-      if (category.id == vCatId) {
-         category.userChecked = !category.userChecked;
-
-         if (category.parentId == undefined) {
-           previousUserCheck = category.userChecked;
-         } else {
-           return;
-         }
-      }
-
-      if (category.parentId == vCatId) {
-         category.userChecked = previousUserCheck;
-      }
-   });
-
-   var c = categories.reduce(function(acc, category) {
-      if (category.userChecked) acc++;
-      return acc;
-   }, 0);
-   // After change the parameter category visibility, just check if we have any category checked
-   hasUserCheck = !!c;
-
-   if (c > 5 && !userWarnedAboutMarkerQty) {
-      toastr.warning('Combining a lot of categories might impact performance.');
-      userWarnedAboutMarkerQty = true;
-   }
-   // _this.refreshMap(category); // Doing in CategoryMenu for now since that has the knowledge of all category changes for now, we'll try to be efficient there.
-};
-
-ZMap.prototype.updateCategoryVisibility2 = function(category, vChecked) {
-  var targetCategories = [category];
-  if(category.children) targetCategories.concat(category.children);
-
-  targetCategories.forEach(function(category) {
-    categories[category.id].userChecked = vChecked;
-  }, this);
-
-
-  this.checkWarnUserSeveralEnabledCategories();
-
-  this.triggerEventHandlers("categoriesChanged", affectedCategories, vChecked);
-
-  _this.refreshMap(targetCategories);
-};
 
 
 //************* CATEGORY MENU *************//
@@ -891,9 +829,9 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
    tinymce.remove();
 
    var catSelection = "";
-   categories.forEach(function(entry) {
+   for(entry in categories) {
       catSelection = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"' + (vMarker!=null&&vMarker.categoryId==entry.id?"selected":"") + '> ' + entry.name + '</option>';
-   });
+   }
 
    var popupContent = '<h2 class="text-center popupTitle">'+ (vMarker!=null?vMarker.title:'New Marker') +'</h2>';
 

@@ -6,15 +6,15 @@ zMap.addEventHandler('uiLoaded', function() {
         var generateFn = function(category, checked, test) {
           historyService.triggerEventHandlers('historyAction', {
             type: 'category',
-            icon: '',
-            color: "corn",
+            icon: 'bars',
+            color: "azure",
             title: "Category " + category.name,
             content: ((checked) ? "Unc" : "C") + "hecked",
             test: test
           });
         };
 
-        zMap.addEventHandler('categoryChanged', generateFn);
+        mapControl._categoryMenu.addEventHandler('categoryChanged', generateFn);
 
         if(ZConfig.getBooleanConfig("history.testAllActions")) {
           generateFn({name: 'test, ... ... ...'}, true);
@@ -24,15 +24,15 @@ zMap.addEventHandler('uiLoaded', function() {
         var generateFn = function(categories, checked, test) {
           historyService.triggerEventHandlers('historyAction', {
             type: 'categories',
-            icon: '',
-            color: "corn",
+            icon: 'bars',
+            color: "azure",
             title: "Categories " + ((checked) ? "Unc" : "C") + "hecked",
-            content: categories.map((category) => category.name).join(', '),
+            content: Object.values(categories).map((category) => category.name).join(', '),
             test: test
           });
         };
 
-        zMap.addEventHandler('categoriesChanged', generateFn);
+        mapControl._categoryMenu.addEventHandler('categoriesChanged', generateFn);
 
         if(ZConfig.getBooleanConfig("history.testAllActions")) {
           generateFn([{name: 'test, ... ... ...'}], true);
