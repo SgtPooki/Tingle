@@ -90,9 +90,8 @@ function getMaps() {
 
 function getUserInfo() {
    $.getJSON("ajax.php?command=get_user_info", function(vResults) {
-    if(vResults.user) {
-      zMap.setUser(vResults.user);
-    }
+    if(vResults.user) zMap.setUser(vResults.user);
+    updateAdState();
     checkChangelog(vResults.user);
    });
 };
@@ -197,7 +196,7 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.showInfoControls             = getUrlParamValue('showInfoControls', vContainer.showInfoControls);
 
       /* startArea entered as a csv to display/fit an area of the map on load */
-      vContainer.startArea                  = getUrlParamValue('startArea', false);
+      vContainer.startArea                  = getUrlParamValue('startArea', "-168,102,-148,122");
 
       if (vContainer.startArea) {
         vContainer.startArea = parseBounds(vContainer.startArea);
@@ -283,4 +282,12 @@ function parseBounds(input) {
 
 
   return bounds;
+};
+
+function updateAdState() {
+  var authenticated = !!user;
+  var mobileAds = document.getElementById("mobileAds");
+  if(mobileAds) $(mobileAds).toggleClass("hidden", (!mapControl.isMobile() || authenticated));
+  var desktopAds = document.getElementById("desktopAds");
+  if(desktopAds) $(desktopAds).toggleClass("hidden", (mapControl.isMobile() || authenticated));
 };

@@ -18,10 +18,10 @@
 function ZMap() {
    var _this;
 
-  // Now that we have the changelog system using the database
-  // with a field for each number, let's use 3 numbers and no
-  // letters in the version.
-  this.version = '0.6.3';
+   // Now that we have the changelog system using the database
+   // with a field for each number, let's use 3 numbers and no
+   // letters in the version.
+   this.version = '0.6.3';
 
    this.mapOptions = {
         startArea : "-168,102,-148,122"
@@ -179,7 +179,9 @@ ZMap.prototype.constructor = function(vMapOptions) {
    hasUserCheck = false;
    userWarnedAboutMarkerQty = false;
    userWarnedAboutLogin = false;
-   mapOptions = {};
+   mapOptions = {
+
+   };
    maps = [];
    markers = [];
    categoryTree = [];
@@ -671,6 +673,7 @@ ZMap.prototype.buildMap = function() {
         historyBox = L.control.infoBox.listBox.historyBox({ position: 'topright' }).addTo(map);
       }
    }
+
    //@TODO: REDO!
    mapControl.setCurrentMap(19, 1900);
    mapControl.addTo(map);
@@ -723,13 +726,6 @@ ZMap.prototype.buildMap = function() {
      this.refreshMap.bind(this)
    );
 
-   if (!mapControl.isMobile()) {
-      var mobileAds = document.getElementById("mobileAds");
-      if(mobileAds) mobileAds.style.display = 'none';
-   } else {
-      var desktopAds = document.getElementById("desktopAds");
-      if(desktopAds) desktopAds.style.display = 'none';
-   }
    this.triggerEventHandlers('uiLoaded');
 };
 
@@ -1301,6 +1297,7 @@ ZMap.prototype.logout = function() {
          if (data.success) {
             toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
             user = null;
+            updateAdState();
             _buildContextMenu();
             mapControl.resetContent();
             showLoginControls();
@@ -1531,6 +1528,7 @@ ZMap.prototype._createLoginForm = function() {
             if (data.success) {
               checkChangelog(data.user);
                _this.setUser(data.user);
+               updateAdState();
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
                mapControl.resetContent();
             } else {
