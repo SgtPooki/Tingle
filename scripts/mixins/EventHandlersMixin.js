@@ -24,9 +24,9 @@ EventHandlersMixin.prototype = {
     this._handlers[eventName].push(handleFunction);
   },
 
-  triggerEventHandlers: function(eventName, data) {
+  triggerEventHandlers: function(eventName, ...data) {
     this._handlers[eventName].forEach(function(handler) {
-      handler(data);
+      handler.apply(null, data);
     }, this);
   }
 }

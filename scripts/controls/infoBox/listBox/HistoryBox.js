@@ -16,8 +16,7 @@ L.Control.InfoBox.ListBox.HistoryBox = L.Control.InfoBox.ListBox.extend({
 
   initialize: function() {
     L.Control.InfoBox.ListBox.prototype.initialize.call(this);
-    L.DomEvent.disableClickPropagation(this._listView.domNode[0]);
-    L.DomEvent.on(this._listView.domNode[0], 'mousewheel', L.DomEvent.stopPropagation);
+    this._addInputHandlers();
     this._addHistoryHandler();
   },
 
@@ -33,6 +32,15 @@ L.Control.InfoBox.ListBox.HistoryBox = L.Control.InfoBox.ListBox.extend({
     this._updateCollapsedState();
 
     return this._container;
+  },
+
+  _addInputHandlers: function() {
+    L.DomEvent.disableClickPropagation(this._listView.domNode[0]);
+    L.DomEvent.on(this._listView.domNode[0], 'mousewheel', L.DomEvent.stopPropagation);
+
+    L.DomEvent.on(document.documentElement, 'keydown', function(e) {
+      if(e.key == 'k' && e.metaKey && e.shiftKey) this._listView.clear();
+    }.bind(this));
   },
 
   _setupContainer: function() {

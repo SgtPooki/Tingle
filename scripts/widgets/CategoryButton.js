@@ -7,6 +7,10 @@
 //     - img: [String] - Class name suffix for child category icon selection.
 //   - onToggle: [Function] To call when the button is clicked.
 //   - toggledOn: [Boolean] Initial state of the button.
+//   - automaticToggle: [Boolean] To call any toggle function automatically from its own click event or not.
+//   - customToggle: [Function] The function to call instead of the normal `toggle` function.
+// - Events:
+//   - toggle: (<newState>)
 
 function CategoryButton(opts) {
   this._setDebugNames();
@@ -15,8 +19,12 @@ function CategoryButton(opts) {
   this._initDOMElements(opts);
   this._setupUserInputListener(opts);
   this._updateState();
+  // this.eventNames = ["toggle"];
+  // this._initHandlers();
+
 };
 $.extend(CategoryButton.prototype, DebugMixin.prototype);
+$.extend(CategoryButton.prototype, EventHandlersMixin.prototype);
 
 CategoryButton.prototype._initSettings = function(opts) {
   if(!opts.category) opts.category = {};
@@ -33,7 +41,8 @@ CategoryButton.prototype._initTemplate = function() {
     '<a class="category-button leaflet-bottommenu-a" href="#">' +
       '<p class="label">' +
       '</p>' +
-    '</a>';
+    '</a>'
+  ;
 };
 
 CategoryButton.prototype._initDOMElements = function(opts) {
@@ -52,6 +61,13 @@ CategoryButton.prototype._setupUserInputListener = function(opts) {
     if(this.automaticToggle) this.toggle();
     else if(opts.customToggle) opts.customToggle.call(this);
   }.bind(this));
+  // if(this.automaticToggle) {
+  //   this.domNode.on('click', function(e) {
+  //     e.preventDefault();
+  //     if(opts.customToggle) opts.customToggle.call(this);
+  //     else this.toggle();
+  //   }.bind(this));
+  // }
 };
 
 CategoryButton.prototype._updateState = function() {

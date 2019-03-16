@@ -95,7 +95,9 @@
     - `$.extend(<subClass>.prototype, DebugMixin.prototype);`
     - Also others as needed:
       - `EventHandlersMixin`
-      - ZMap currently has another type of handler system, that looks like events, and is centered around method calls, if I ever want to extract that, but I think the better solution is better object inheritance.
+        - `this.eventNames = ["<eventName>", ...];`
+        - `this._initHandlers();`
+      - ZMap currently has another type of handler system, that looks like events, and is centered around method calls, if I ever want to extract that, but I think the better solution is object inheritance.
   - Functions
     - Common ones include:
       - `_initSettings`, `_initDOMElements` and/or `_initTemplate`,

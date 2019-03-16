@@ -105,7 +105,7 @@ function ZMap() {
    this.eventNames = [
      "uiLoaded", "markersAdded", "login", "logout",
      "register", "lostPassword", "changePassword",
-     "areaChanges"
+     "areaChanges", "categoriesChanged"
    ];
    this._initHandlers();
 };
@@ -200,7 +200,12 @@ ZMap.prototype.constructor = function(vMapOptions) {
       mapOptions = vMapOptions;
    }
 
-   if(!mapOptions.categorySelectionMethod) mapOptions.categorySelectionMethod = "exact";
+  if(!mapOptions.categorySelectionMethod) {
+    mapOptions.categorySelectionMethod = getSetOrDefaultValue(
+      ZConfig.getConfig("categorySelectionMethod"),
+      "focus"
+    );
+  }
 
   // markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
 
@@ -225,6 +230,9 @@ ZMap.prototype.constructor = function(vMapOptions) {
    } else {
       currentIcon = 'Small';
    }
+
+   zMap.addEventHandler("categoriesChanged", this.checkActiveCategoryAmount.bind(this));
+   zMap.addEventHandler("categoriesChanged", this.refreshMap.bind(this));
 };
 
 // Add a map category
@@ -756,9 +764,8 @@ ZMap.prototype.checkWarnUserSeveralEnabledCategories = function() {
     if(categories.reduce(
       function(sum, category) {
         return sum + ((category.userChecked) ? 1 : 0);
-      },
-      0
-    ) > 5) {
+      }, 0) > 5
+    ) {
       toastr.warning('Combining a lot of categories might impact performance.');
       userWarnedAboutMarkerQty = true;
     }
@@ -768,36 +775,30 @@ ZMap.prototype.checkWarnUserSeveralEnabledCategories = function() {
 ZMap.prototype.updateCategoryVisibility = function(category, vChecked) {
   vCatId = category.id;
    // Change the category visibility of the category parameter
-   // var previousUserCheck;
+   var previousUserCheck;
 
-   function forEachCatUserChecked(category, index, array) {
+   categories.forEach(function(category, index, array) {
       if (category.id == vCatId) {
          category.userChecked = !category.userChecked;
 
-         if (category.parentId != undefined) {
-            return;
+         if (category.parentId == undefined) {
+           previousUserCheck = category.userChecked;
          } else {
-            previousUserCheck = category.userChecked;
+           return;
          }
       }
 
       if (category.parentId == vCatId) {
          category.userChecked = previousUserCheck;
       }
-   }
-   categories.forEach(forEachCatUserChecked);
+   });
 
-
+   var c = categories.reduce(function(acc, category) {
+      if (category.userChecked) acc++;
+      return acc;
+   }, 0);
    // After change the parameter category visibility, just check if we have any category checked
-   hasUserCheck = false;
-   var c = 0;
-   function forEachCat(element, index, array) {
-      if (element.userChecked == true) {
-         hasUserCheck = true;
-         c++;
-      }
-   }
-   categories.forEach(forEachCat);
+   hasUserCheck = !!c;
 
    if (c > 5 && !userWarnedAboutMarkerQty) {
       toastr.warning('Combining a lot of categories might impact performance.');
@@ -817,19 +818,9 @@ ZMap.prototype.updateCategoryVisibility2 = function(category, vChecked) {
 
   this.checkWarnUserSeveralEnabledCategories();
 
+  this.triggerEventHandlers("categoriesChanged", affectedCategories, vChecked);
+
   _this.refreshMap(targetCategories);
-};
-
-ZMap.prototype.updateMarkerVisibility = function(vCatId, vVisible) {
-
-   for (var i = 0; i < markers.length; i++) {
-      if (markers[i].categoryId == vCatId) {
-         markers[i].visible = vVisible;
-      }
-   }
-
-   _this.refreshMap();
-
 };
 
 

@@ -1,12 +1,19 @@
+// CategoryMenu - Pulls the buttons together to control the categories ineither method.
+// - opts:
+//   - onCategoryToggle: [Boolean]
+// - Config:
+//   - categorySelectionMethod: [String] The different methods for interpreting user input for the categories.  Currently supports "exact" (any other really) and "focus" (Jason's wanted wacky/'intelligent' style).
+//   - automaticToggle: [Boolean]
+//   - defaultToggledState: [Boolean]
+
 function CategoryMenu(opts) {
   this._initSettings(opts);
   this._initDOMElements(opts);
 };
 
 CategoryMenu.prototype._initSettings = function(opts) {
-  this.defaultToggledState = getSetOrDefaultValue(opts.defaultToggledState, false);
-
-  this.categorySelectionMethod = opts.categorySelectionMethod;
+  this.categorySelectionMethod = getSetOrDefaultValue(ZConfig.getConfig("categorySelectionMethod"), "focus");
+  this.defaultToggledState = getSetOrDefaultValue(opts.defaultToggledState, (this.categorySelectionMethod == "focus"));
   this.automaticToggle = getSetOrDefaultValue(opts.automaticToggle, !(this.categorySelectionMethod == "focus"));
 };
 
