@@ -1305,7 +1305,7 @@ ZMap.prototype.logout = function() {
             toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
          }
          this.triggerEventHandlers('logout', { result: data.success });
-      }
+      }.bind(this)
    });
 };
 
@@ -1536,10 +1536,10 @@ ZMap.prototype._createLoginForm = function() {
                toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));
             }
             this.triggerEventHandlers('login', { result: data.success });
-        }
+        }.bind(this)
       });
       e.preventDefault();
-   });
+   }.bind(this));
 
    $("#login_register_btn").click(function(e) {
       _this._createRegisterForm();

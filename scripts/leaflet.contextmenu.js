@@ -605,7 +605,7 @@ function _buildContextMenu() {
          }
       }, {
          text: 'Log Out',
-         callback: this.logout.bind(this)
+         callback: zMap.logout.bind(zMap)
       });
    }
 
