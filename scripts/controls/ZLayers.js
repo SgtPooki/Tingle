@@ -106,7 +106,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
       var completedButton = new CategoryButtonCompleted({
         toggledOn: mapOptions.showCompleted,
-        onToggle: function(showCompleted) {
+        onToggle: function(category, showCompleted) {
 	        zMap.toggleCompleted(showCompleted);
 	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
