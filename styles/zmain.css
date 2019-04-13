@@ -372,7 +372,7 @@ body,
   border-left: 1px solid rgba(255, 255, 255, .2);
 }
 
-.history.leaflet-control {
+.history.leaflet-control .infobox {
   min-width: 200px;
   max-width: 300px;
 }
@@ -1056,19 +1056,13 @@ a.icon-close2 {
 	-webkit-background-clip: padding-box;
 }
 
-.row.vertical-divider>div[class^="col-"]:nth-child(2) {
-  width: 70%;
-}
-
 .row.vertical-divider div[class^="col-"]:first-child {
 	border-left: none;
-	width: 15%;
 	border-right: 1px solid rgba(255, 255, 255, .2);
 }
 
 .row.vertical-divider div[class^="col-"]:last-child {
   border-right: none;
-	width: 15%;
 	border-left: 1px solid rgba(255, 255, 255, .2);
 }
 
