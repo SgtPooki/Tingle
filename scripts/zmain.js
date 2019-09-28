@@ -76,6 +76,17 @@ function getMapCategoriesTree() {
 
 };
 
+function getGames() {
+
+   $.getJSON("ajax.php?command=get_games", function(vResults){
+      $.each(vResults, function(i,map){
+         zMap.addGame(map);
+      });
+   });
+
+};
+
+
 function getMaps() {
 
    $.getJSON("ajax.php?command=get_map&game=" + gameId, function(vResults){
@@ -130,7 +141,10 @@ function getMarkers(){
                 , subMap     : getUrlParamValue('subMap', null)
                 , marker     : getUrlParamValue('marker', null)
                 , zoom       : getUrlParamValue('zoom', 4)
+                , hideOthers : getUrlParamValue('hideOthers', false)
+                , hidePin    : getUrlParamValue('hidePin', false)
       });
+      zMap.goToStart();
 
    });
 };
@@ -184,7 +198,7 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.showCategoryControlOpened  = getUrlParamValue('showCategoryControlOpened', getCookie('isCategoryOpen')=="true");//vContainer.showCategoryControl);
       vContainer.showZoomControl            = getUrlParamValue('showZoomControl', vContainer.showZoomControl);
 
-      vContainer.zoom                       = getUrlParamValue('zoom', 4); /*@TODO: Check if there is a zoom parameter. If not, use the one we got from the DB*/
+      vContainer.zoom                       = getUrlParamValue('zoom', vContainer.defaultZoom);
       vContainer.zoomSnap                   = parseFloat(getUrlParamValue('zoomSnap', 1)); /*@TODO: Check if there is a zoomSnap parameter. If not, use the one we got from the DB*/
       vContainer.zoomDelta                  = parseFloat(getUrlParamValue('zoomDelta', 1)); /*@TODO: Check if there is a zoomDelta parameter. If not, use the one we got from the DB*/
       if (vContainer.zoom > vContainer.maxZoom) {
@@ -193,7 +207,7 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.centerX                    = getUrlParamValue('x', vContainer.centerX);
       vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
       vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
-      vContainer.showInfoControls             = getUrlParamValue('showInfoControls', vContainer.showInfoControls);
+      vContainer.showInfoControls           = getUrlParamValue('showInfoControls', vContainer.showInfoControls);
 
       /* startArea entered as a csv to display/fit an area of the map on load */
       vContainer.startArea                  = getUrlParamValue('startArea', "-168,102,-148,122");
@@ -232,6 +246,7 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
          zMap.addCompletedMarkers(JSON.parse(completedMarkers));
       }
 
+      getGames();
       getMaps();
 
       $("#map").css("background-color", vContainer.bgColor);

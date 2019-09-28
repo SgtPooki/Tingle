@@ -104,14 +104,29 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
       var logo = new Logo({ parent: headerMenu });
 
-      var completedButton = new CategoryButtonCompleted({
-        toggledOn: mapOptions.showCompleted,
-        onToggle: function(category, showCompleted) {
-	        zMap.toggleCompleted(showCompleted);
+      _thisLayer = this;
+      this._gameMenu = this.createGameMenu();
+      this._mapsMenu = this.createMapsMenu();
+     
+      var mapsButton = new MapButton({
+        toggledOn: true,
+        onToggle: function() {
+           _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
 	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-      $(headerMenu).append(completedButton.domNode);
+      $(headerMenu).append(mapsButton.domNode);
+      
+      var gamesButton = new GameButton({
+        toggledOn: true,
+        onToggle: function() {
+           _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
+	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+      });
+      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+      $(headerMenu).append(gamesButton.domNode);
+      
+
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
@@ -121,6 +136,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._contents.id = 'menu-cat-content';
 
       this._categoryMenu = this.createCategoryMenu();
+      
 
       this.resetContent();
 
@@ -131,6 +147,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		container.appendChild(form1);
     container.appendChild(this._contents);
    },
+   
+   rebuildMapsMenu: function () {
+      this._mapsMenu = this.createMapsMenu();
+   },
+
   createCategoryMenu: function() {
     return new CategoryMenu({
      categoryTree: categoryTree
@@ -170,6 +191,40 @@ L.Control.ZLayers = L.Control.Layers.extend({
     }
   },
 
+  createGameMenu: function() {
+    return new GameMenu({
+     categoryTree: games,
+     onCategoryToggle: function(toggledOn, category) {
+       (
+         window.location.replace(location.protocol + '//' + location.host + location.pathname + "?game=" + category.shortName)
+       ).call(zMap, category, toggledOn)
+     }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+     categorySelectionMethod: this.options.categorySelectionMethod,
+     defaultToggledState: (this.options.categorySelectionMethod == "focus")
+   });
+  },
+  
+  createMapsMenu: function() {
+    return new MapsMenu({
+     categoryTree: maps,
+     onCategoryToggle: function(toggledOn, category) {
+         if (this.currentMapLayer.id != category.id) {
+               map.removeLayer(this.currentMapLayer);
+               map.addLayer(category);
+               this.currentMapLayer = category;        
+               this.currentMapLayer.bringToBack();
+               map.fire("baselayerchange", this.currentMapLayer);
+         }
+     }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+     categorySelectionMethod: this.options.categorySelectionMethod,
+     defaultToggledState: (this.options.categorySelectionMethod == "focus")
+   });
+  },
+  
+  changeMapLayer: function(category) {
+
+  },
+  
   _addCollapseHandler: function() {
     $(document).on('keydown', function(e) {
       if(e.key == "Escape") {
@@ -204,8 +259,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // Our fix for re-using the CategoryMenu not just for
     // more efficient code style, but also to retain the event
     // listeners set-up during intialization.
-    if(this._contentType == 'category') // in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
+    if(this._contentType == 'category') {// in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
       $(this._categoryMenu.domNode).detach();
+    }
+    if(this._contentType == 'game') {// in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
+      $(this._gameMenu.domNode).detach();
+    }
+    if(this._contentType == 'maps') {// in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
+      $(this._mapsMenu.domNode).detach();
+    }
     $(this._contents).empty();
     if(vType != 'category') {
       var closeButton = L.DomUtil.create('a', 'button back-button', this._contents);
@@ -310,6 +372,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
   setCurrentMap: function(vMap, vSubMap) {
     this.currentMap = vMap;
     this.currentSubMap = vSubMap;
+  },
+  setCurrentMapLayer: function(vMap) {
+    this.currentMapLayer = vMap;
   },
 	// Needs improvements
 	changeMap: function(mapId, subMapId) {
