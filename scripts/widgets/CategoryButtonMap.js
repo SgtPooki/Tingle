@@ -25,9 +25,9 @@ CategoryButtonMap.prototype._setDebugNames = function() {
 CategoryButtonMap.prototype._initSettings = function(opts) {
   if(!opts.category) opts.category = {};
   if(opts.showIcon == undefined) opts.showIcon = true;
-   
+
   this.showIcon = opts.showIcon;
-   
+
   this.category = opts.category;
   this.onToggle = opts.onToggle || $.noop;
 
@@ -39,7 +39,7 @@ CategoryButtonMap.prototype._initTemplate = function() {
    console.log();
    this.domNodeTemplate = '' +
     '<a class="category-button leaflet-bottommenu-a" href="#">' +
-      '<img class="" src="' + this.category.options.iconURL + '" title="' + this.category.name + '">' +
+      '<img class="" src="' + (this.category.options.iconURL || "") + '" title="' + this.category.name + '">' +
       '<p class="label">' +
       '</p>' +
     '</a>';
