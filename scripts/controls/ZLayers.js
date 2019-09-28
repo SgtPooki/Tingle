@@ -107,7 +107,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       _thisLayer = this;
       this._gameMenu = this.createGameMenu();
       this._mapsMenu = this.createMapsMenu();
-     
+
       var mapsButton = new MapButton({
         toggledOn: true,
         onToggle: function() {
@@ -116,7 +116,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
       $(headerMenu).append(mapsButton.domNode);
-      
+
       var gamesButton = new GameButton({
         toggledOn: true,
         onToggle: function() {
@@ -125,7 +125,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
       $(headerMenu).append(gamesButton.domNode);
-      
+
 
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
@@ -136,7 +136,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._contents.id = 'menu-cat-content';
 
       this._categoryMenu = this.createCategoryMenu();
-      
+
 
       this.resetContent();
 
@@ -147,7 +147,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		container.appendChild(form1);
     container.appendChild(this._contents);
    },
-   
+
    rebuildMapsMenu: function () {
       this._mapsMenu = this.createMapsMenu();
    },
@@ -203,7 +203,21 @@ L.Control.ZLayers = L.Control.Layers.extend({
      defaultToggledState: (this.options.categorySelectionMethod == "focus")
    });
   },
-  
+
+
+  createGameMenu: function() {
+    return new GameMenu({
+     categoryTree: games,
+     onCategoryToggle: function(toggledOn, category) {
+       (
+         window.location.replace(location.protocol + '//' + location.host + location.pathname + "?game=" + category.shortName)
+       ).call(zMap, category, toggledOn)
+     }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+     categorySelectionMethod: this.options.categorySelectionMethod,
+     defaultToggledState: (this.options.categorySelectionMethod == "focus")
+   });
+  },
+
   createMapsMenu: function() {
     return new MapsMenu({
      categoryTree: maps,
@@ -211,7 +225,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
          if (this.currentMapLayer.id != category.id) {
                map.removeLayer(this.currentMapLayer);
                map.addLayer(category);
-               this.currentMapLayer = category;        
+               this.currentMapLayer = category;
                this.currentMapLayer.bringToBack();
                map.fire("baselayerchange", this.currentMapLayer);
          }
@@ -220,11 +234,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
      defaultToggledState: (this.options.categorySelectionMethod == "focus")
    });
   },
-  
+
   changeMapLayer: function(category) {
 
   },
-  
+
   _addCollapseHandler: function() {
     $(document).on('keydown', function(e) {
       if(e.key == "Escape") {
