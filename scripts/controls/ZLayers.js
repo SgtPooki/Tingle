@@ -107,7 +107,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       _thisLayer = this;
       this._gameMenu = this.createGameMenu();
       this._mapsMenu = this.createMapsMenu();
-
+     
       var mapsButton = new MapButton({
         toggledOn: true,
         onToggle: function() {
@@ -116,7 +116,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
       $(headerMenu).append(mapsButton.domNode);
-
+      
       var gamesButton = new GameButton({
         toggledOn: true,
         onToggle: function() {
@@ -125,7 +125,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
       $(headerMenu).append(gamesButton.domNode);
-
+      
 
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
@@ -147,6 +147,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		container.appendChild(form1);
     container.appendChild(this._contents);
    },
+   
 
    rebuildMapsMenu: function () {
       this._mapsMenu = this.createMapsMenu();
@@ -234,10 +235,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
      defaultToggledState: (this.options.categorySelectionMethod == "focus")
    });
   },
-
+  
   changeMapLayer: function(category) {
 
   },
+  
 
   _addCollapseHandler: function() {
     $(document).on('keydown', function(e) {
@@ -380,16 +382,21 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   },
 
-  getCurrentMap: function() {
-    return {mapId: this.currentMap, subMapId: this.currentSubMap}
-  },
-  setCurrentMap: function(vMap, vSubMap) {
-    this.currentMap = vMap;
-    this.currentSubMap = vSubMap;
-  },
-  setCurrentMapLayer: function(vMap) {
-    this.currentMapLayer = vMap;
-  },
+   _checkDisabledLayers: function () {
+
+   },
+
+
+   getCurrentMap: function() {
+      return {mapId: this.currentMap, subMapId: this.currentSubMap}
+   },
+   setCurrentMap: function(vMap, vSubMap) {
+      this.currentMap = vMap;
+      this.currentSubMap = vSubMap;
+   },
+   setCurrentMapLayer: function(vMap) {
+      this.currentMapLayer = vMap;
+   },
 	// Needs improvements
 	changeMap: function(mapId, subMapId) {
 		inputs = this._form.getElementsByTagName('input'),

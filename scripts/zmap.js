@@ -49,6 +49,12 @@ function ZMap() {
    this.zoomDirectories = ZConfig.getConfig("zoomDirectories");
    this.tileNameFormat = ZConfig.getConfig("tileNameFormat");
 
+   // @TODO: This is a WORKAROUND. Icon sho   
+   // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself. 
+   //        For now, since we don`t want to bother Matthew, we are creating a new folder in th ecode
+   //        In the future, we need to move the icon.png of every map to the tiledmap and change defaultIconURL to defaultTilesURL
+   this.defaultIconURL = 'images/icons/';
+
    this.newMarker;
 
    this.user;
@@ -272,9 +278,6 @@ ZMap.prototype.addMap = function(vMap) {
                                              , noWrap:            true
                                              , tileSize:          mapOptions.tileSize
                                              , updateWhenIdle:    true
-                                             , updateWhenZooming: false
-                                             , label:             vMap.name
-                                             , iconURL:           this.tilesBaseURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
                                              }
       );
 
@@ -297,7 +300,7 @@ ZMap.prototype.addMap = function(vMap) {
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
                                              , label:             vMap.name
-                                             , iconURL:           this.tilesBaseURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                             , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                              }
       );
 
@@ -318,7 +321,7 @@ ZMap.prototype.addMap = function(vMap) {
                                               , updateWhenIdle:    true
                                               , updateWhenZooming: false
                                               , label:             vMap.name
-                                              , iconURL:           this.tilesBaseURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                              , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                             }
          );
 
@@ -347,7 +350,7 @@ ZMap.prototype.addMap = function(vMap) {
                                                                          , updateWhenIdle:    false
                                                                          , updateWhenZooming: false
                                                                          , label:             vMap.name
-                                                                         , iconURL:           this.tilesBaseURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
+                                                                         , iconURL:           this.defaultIconURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
                                                                          });
                overlay2.id             = 'mID' + submap.id;
                overlay2.originalId     = submap.id;
@@ -718,16 +721,6 @@ ZMap.prototype.buildMap = function() {
       }
    }
 
-   map.addControl(
-       L.control.basemaps({
-           basemaps: maps,
-           tileX: 0,
-           tileY: 0,
-           tileZ: 1,
-           position: 'topright'
-       })
-   );
-
    //@TODO: REDO!
    mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
    mapControl.setCurrentMapLayer(maps[0]);
@@ -746,7 +739,7 @@ ZMap.prototype.buildMap = function() {
 
    //Change visible region to that specified by the corner coords if relevant query strings are present
    if (mapOptions.startArea) {
-     map.fitBounds(mapOptions.startArea);
+      map.fitBounds(mapOptions.startArea);
    } else {
      map.setView([mapOptions.centerY, mapOptions.centerX]); // Loading map center later so controls that hook the 'load' event have a chance to fire now!
    }
@@ -794,11 +787,11 @@ ZMap.prototype.buildMap = function() {
          }
       }
       // END OF WORKAROUND!!!
-
+      //console.log(e.originalId + " " + defaultSubMapId);
       mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
       _this.refreshMap();
       _this._closeNewMarker();
-      mapControl.resetContent();
+      //mapControl.resetContent();
 
       map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
 
@@ -1700,8 +1693,9 @@ ZMap.prototype.goTo = function(vGoTo) {
    }
 
    if (vGoTo.marker) {
-      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin);
+      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true);
       // Open Marker already does a change map, so it takes precedence
+      
       return;
    }
 
@@ -1716,10 +1710,10 @@ ZMap.prototype.goTo = function(vGoTo) {
  * @param vMarkerID             - Marker ID to be opened
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
-   _openMarker(vMarkerId, vZoom, true);
+   _openMarker(vMarkerId, vZoom, true, false);
 }
 
-ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin) {
+ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin, vPanTo) {
    var marker = this.cachedMarkersById[vMarkerId];
    if(marker) {
      mapControl.changeMap(marker.mapId, marker.submapId);
@@ -1745,10 +1739,13 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin) {
      map.setView(latlng, vZoom);
      _this._createMarkerPopup(marker);
      if (vPin) {
-         newMarker = L.marker(marker._latlng).addTo(map);
+     newMarker = L.marker(marker._latlng).addTo(map);
      }
 
      //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
+     if (vPanTo) {
+        map.panTo(marker.getLatLng());
+     }
      return;
    }
 
