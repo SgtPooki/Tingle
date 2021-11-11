@@ -1,5 +1,4 @@
 name: A workflow that check if links in README.md is working
-description: @see https://github.com/LeandroLS/linksnitch
 on: push
 jobs:
   build:
